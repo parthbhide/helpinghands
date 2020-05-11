@@ -178,7 +178,7 @@ function plus(id)
       </div>
 	  
 	  
-	  <div class="layout-inline row ">
+	  <div class="layout-inline row " style="margin-top: 2%;">
 		<div class="col-sm-6 col-pro layout-inline align-center ">
           <h3><p>Choose a date for donation :</p></h3>
         </div>
@@ -192,9 +192,13 @@ function plus(id)
       </div>	  
   </div>
   {% if flag %}
+  <div class="container-fluid" style="display: inline-flex; justify-content: center;">
       <input type="submit" class="btn btn-update align-left" value="Request !" disabled></a>
+  </div>
   {% else %}
+  <div class="container-fluid" style="display: inline-flex; justify-content: center;">
       <input type="submit" class="btn btn-update align-left" value="Request !" ></a>
+  </div>
   {% endif %}
   
 </form>

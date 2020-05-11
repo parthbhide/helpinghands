@@ -156,13 +156,13 @@ function plus(id)
             <input type="numeric" name="stationary-qty" id="num2" value="0" />
           <a class="qty qty-minus" onclick="plus('num2')">+</a>
         </div>
-        <div class="col col-vat col-numeric">
+        <div class="col col-vat col-numeric" >
           <textarea name="stationary-disc" placeholder="Enter a small description here"></textarea>         
         </div>       
       </div>
 	  
 	  
-	  <div class="layout-inline row ">
+	  <div class="layout-inline row " style="margin-top: 2%;">
 		<div class="col-sm-6 col-pro layout-inline align-center ">
           <h3><p>Choose a date for collection :</p></h3>
         </div>
@@ -176,9 +176,13 @@ function plus(id)
       </div>	  
   </div>
   {% if flag %}
+  <div class="container-fluid" style="display: inline-flex; justify-content: center;">
       <input type="submit" class="btn btn-update align-left" value="Donate !" disabled></a>
+  </div>
   {% else %}
-      <input type="submit" class="btn btn-update align-left" value="Donate !" ></a>
+    <div class="container-fluid" style="display: inline-flex; justify-content: center;">
+        <input type="submit" class="btn btn-update" value="Donate !" ></a>
+    </div>
   {% endif %}
   
 </form>

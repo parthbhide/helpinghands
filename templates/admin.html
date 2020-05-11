@@ -22,7 +22,23 @@
     <link rel="stylesheet" href="{% static 'css/slicknav.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-<link rel="stylesheet" href="{% static 'css/donorloginscreen.css' %}">
+<link rel="stylesheet" href="{% static 'css/receiverloginscreen.css' %}">
+<script>
+function minus(id)
+{
+	var val = parseInt(document.getElementById(id).value);
+	if (val >0)
+		val -=1;
+	document.getElementById(id).value = val;
+}
+function plus(id)
+{
+	var val = parseInt(document.getElementById(id).value);
+	if (val<10)
+		val +=1;
+	document.getElementById(id).value = val;
+}
+</script>
 </head>
 <body>
  <!-- header-start -->
@@ -53,7 +69,7 @@
                                             </ul>
                                         </li>
                                         {% endif %}
-                                        <li><a href="contact.html">Contact</a></li>
+                                        <li><a href="{% url 'contact' %}">Contact</a></li>
                                         {% if user.is_authenticated %}
                                         <li><a class="active" href="{% url 'donorhome' %}" >Welcome, {{ user.username }}</a></li>
                                         {% endif %}
@@ -84,121 +100,95 @@
         </div>
     </header>
     <!-- header-end --> 
-    <br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br>
         <h4 style="color:Red;text-align:center">
     				{% if error %}
         {{ error }}
         {% endif %}
-        </h4>
-        
-   <div class="alert alert-info">
-        <h3 style="color:red">Volunteer's Policy :</h3>
-        
-           <ul><h4>
-                   <li><span class="badge badge-info">*</span> You will be not be provided with any of the transport means you are required use your own to serve.</li>
-                   <li><span class="badge badge-info">*</span> On the collecion or donation drive date you should be available from 9am to 6pm.</li>
-                   <li><span class="badge badge-info">*</span> This organization is working as a <strong>NON-PROFIT ORGANIZATION</strong>.</li>
-                   <li><span class="badge badge-info">*</span> This organization is presently working in <strong>BHOPAL</strong> city only.</li>
-                   <li><span class="badge badge-info">*</span> As Volunteer you will be reponsible for all the items to be delivered and same for collecting.</li>
-           </h4></ul>
-           </div>
-           <div class="table-wrapper-scroll-y my-custom-scrollbar">
-
-  <table class="table table-bordered table-striped mb-0">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Address</th>
-        <th scope="col">Name</th>
-        <th scope="col">Date</th>
-        <th scope="col">Category</th>
-        <th scope="col">Quantity</th>
-        <th scope="col">Description</th>
-      </tr>
-    </thead>   
-    <tbody>
-        {% for key,value in donor_detail.items %}
-      <tr>
-        <th scope="row">{{ key }}</th>
-        <td>{{ value.donor.address }} </td>
-        <td> {{ value.donor }}</td>
-        <td> {{ value.date.date }}</td>
-        <td> {{ value.category.category }}</td>
-        <td> {{ value.quantity }}</td>
-        <td> {{ value.description }}</td>
-      </tr>
-       {% endfor %}
-    </tbody>
-  </table>
-
-</div>
-<form id= "donation" method= "POST" action= "{% url 'volunteerhome' %}">
-
-{% csrf_token %}
-        {% if dis_flag %}
-       <h4 style="color:Red;text-align:center">
-    	{% if c_flag %}
+        {% if flag %}
         <!-- linebreakser is used to convert all \n  passed in python script to line breaks --> 
-        {{ c_e|linebreaksbr }}
-        
+        {{ e|linebreaksbr }}
         {% endif %}
         </h4>
-	  <br>
-	
-	  <div class="layout-inline row ">
-		<div class="col-sm-6 col-pro layout-inline align-center ">
-		
-          <h3><p>Choose a date for collection :</p></h3>
+        <div class="alert alert-info">
+             <h3 style="color:red">Note :</h3>
+             
+                <ul><h4>
+                        <li><span class="badge badge-info">*</span> In update quantity column , please enter <strong>newly collected/donated quantity</strong> for the perticlar items.</li>
+                        <li><span class="badge badge-info">*</span> Suppose, already available quantity is <strong>20 for stationary</strong>, and today <strong>5 more were collected</strong>, then you should 
+                                                                    <strong>enter 5 in the updated quantity field for stationary.</strong> </li>
+                </h4></ul>
         </div>
-			<div class="form-radio">
-    			{% for key,value in collection_dates.items %}
-    				<input type="radio" name="collection_date" value="{{ key }}" id="c{{ key }}" />
-    				<label for="c{{ key }}"> {{ value.date }} </label>
-				{% endfor %}
-       			
-            </div>        
-      </div>	 
-      
-  </div>
-  
-
-  
-  {% if c_flag %}
-      <input type="submit" class="btn btn-update align-left" value="Register for Collectiondrive !" disabled></a>
-  {% else %}
-      <input type="submit" class="btn btn-update align-left" value="Register for Collectiondrive !" ></a>
-  {% endif %}
-  {% endif %} 
-  
-  <br><br><br>
-       <h4 style="color:Red;text-align:center">
-	     {% if d_flag %}
-         <!-- linebreakser is used to convert all \n  passed in python script to line breaks --> 
-         {{ d_e|linebreaksbr }}
-        
-         {% endif %}
-     </h4>
-     <br>
-  <div class="layout-inline row ">
-		<div class="col-sm-6 col-pro layout-inline align-center ">
-          <h3><p>Choose a date for donation :</p></h3>
+<form id= "donation" method= "POST" action= "{% url 'donorhome' %}">
+{% csrf_token %}
+<div class="table">     
+      <div class="layout-inline row th">
+        <div class="col col-pro align-center">Item</div>
+        <div class="col col-qty align-center">Available QTY</div>
+        <div class="col col-qty align-center">Update QTY</div>
+      </div>
+      <div class="layout-inline row">
+        <div class="col col-pro layout-inline align-center">
+          <img class ="image" src="{% static 'img/cloths.png' %}" alt="cloths" />
+          <p>Cloths</p>
         </div>
-        
-			<div class="form-radio">
-    			{% for key,value in donation_dates.items %}
-    				<input type="radio" name="donation_date" value="{{ key }}" id="d{{ key }}" />
-    				<label for="d{{ key }}"> {{ value.date }} </label>
-				{% endfor %}				
-            </div>        
-      </div>	  
+        <div class="col col-qty layout-inline">
+          
+            <input type="numeric" name="cloths-qty" id="num" value="0" disabled/>
+          
+        </div>
+                <div class="col col-qty layout-inline">
+          <!-- <a class="qty qty-minus" onclick="minus('num')">-</a> -->
+            <input type="numeric" name="cloths-qty" id="num" value="0" />
+          <!-- <a class="qty qty-minus" onclick="plus('num')">+</a> -->
+        </div>
+      </div>
+      <div class="layout-inline row row-bg2">
+        <div class="col col-pro layout-inline align-center">
+          <img class ="image" src="{% static 'img/footwear.png' %}" alt="footwear" />
+          <p>Footware</p>
+        </div>
+        <div class="col col-qty  layout-inline">
+          
+            <input type="numeric" name="footwear-qty" id="num1" value="0" disabled/>
+          
+        </div>
+        <div class="col col-qty  layout-inline">
+          <!-- <a class="qty qty-minus" onclick="minus('num1')">-</a> -->
+            <input type="numeric" name="footwear-qty" id="num1" value="0" />
+          <!-- <a class="qty qty-minus" onclick="plus('num1')">+</a> -->
+        </div>     
+      </div>
+       <div class="layout-inline row ">
+    		<div class="col col-pro layout-inline align-center">
+              <img class ="image" src="{% static 'img/stationary.png' %}" alt="stationary" />
+              <p>Stationary</p>
+            </div>
+            <div class="col col-qty layout-inline">
+              
+                <input type="numeric" name="cloths-qty" id="num" value="0" disabled/>
+              
+            </div>
+            <div class="col col-qty layout-inline align-center">
+              <!-- <a class="qty qty-minus" onclick="minus('num2')">-</a> -->
+                <input type="numeric" name="stationary-qty" id="num2" value="0" />
+              <!-- <a class="qty qty-minus" onclick="plus('num2')">+</a> -->
+            </div>       
+      </div>
   </div>
-  {% if d_flag %}
-      <input type="submit" class="btn btn-update align-left" value="Register for Donationdrive !" disabled></a>
-  {% else %}
-      <input type="submit" class="btn btn-update align-left" value="Register for Donationdrive !" ></a>
-  {% endif %}
-  
+    <div class="container-fluid" style="display: inline-flex; justify-content: center;">
+        <input type="submit" class="btn btn-update align-center" value="Update Stock !"></a> 
+    </div>
 </form>
+<br><br>
+<div>
+    <div class="container-fluid" style="display: inline-flex; justify-content: center;">
+        <button id="btnSearch" class="btn btn-update" style=" margin: 10px;" OnClick="btnSearch_Click">Genrate report for donation drive</button>
+         <button id="btnClear" class="btn btn-update" style=" margin: 10px;" OnClick="btnClear_Click">Genrate report for collection drive</button>
+     </div>
+</div>
+</form>
+</div>
 
 
  <script src="{% static 'js/vendor/modernizr-3.5.0.min.js' %}"></script>

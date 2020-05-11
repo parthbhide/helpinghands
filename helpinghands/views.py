@@ -27,7 +27,7 @@ def aboutus(request):
     return render(request, 'aboutus.html')
 
 def demo(request):
-    return render(request, 'test.html')
+    return render(request, 'admin.html')
 
 def user_signup(request):
     if request.method == 'POST':
@@ -285,13 +285,13 @@ def volunteerhome(request):
                 donated_by_details.volunteer = request.user
                 donated_by_details.date = c[int(request.POST['donation_date'])]
                 donated_by_details.save()
-            return render(request,'test.html',{'error' : 'Details saved !! ', 'collection_dates': d , 'donation_dates' : c, })
+            return render(request,'volunteer-home.html',{'error' : 'Details saved !! ', 'collection_dates': d , 'donation_dates' : c, })
         
         else:
-            return render(request,'test.html',{'error' : 'Atleast one date is required !! ', 'collection_dates': d , 'donation_dates' : c, })
+            return render(request,'volunteer-home.html',{'error' : 'Atleast one date is required !! ', 'collection_dates': d , 'donation_dates' : c, })
         #do something
         
     
     else:
-        return render(request,'test.html',{'collection_dates': d , 'donation_dates' : c, 'c_flag': c_flag, 'c_e':c_e,'d_flag': d_flag, 'd_e':d_e, 'donor_detail' : p, 'dis_flag' : dis_flag, 'len' : range(len(p))})
+        return render(request,'volunteer-home.html',{'collection_dates': d , 'donation_dates' : c, 'c_flag': c_flag, 'c_e':c_e,'d_flag': d_flag, 'd_e':d_e, 'donor_detail' : p, 'dis_flag' : dis_flag, 'len' : range(len(p))})
     

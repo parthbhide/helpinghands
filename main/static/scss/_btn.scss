@@ -1,0 +1,87 @@
+.boxed-btn {
+	background: #fff;
+	color: #450000;
+	display: inline-block;
+	padding: 18px 44px;
+	font-family: $font2;
+	font-size: 14px;
+    font-weight: 400;
+    border: 0;
+    border: 1px solid #450000;
+    letter-spacing: 3px;
+    // width: 180px;
+    text-align: center;
+    color: #450000 !important;
+    text-transform: uppercase;
+    &:hover{
+        background: #450000;
+        color: #fff !important;
+        border: 1px solid #450000;
+    }
+    &:focus{
+        outline: none;
+    }
+    &.large-width{
+        width: 220px;
+    }
+}
+.boxed-btn2 {
+	background: #A70000;
+	color: #fff;
+	display: inline-block;
+	padding: 17px 50px 16px 50px;
+	font-family: $font2;
+	font-size: 16px;
+    font-weight: 400;
+    border: 0;
+    text-transform: capitalize;
+    color: #fff;
+    &:hover{
+        background: #fff;
+    }
+    &:focus{
+        outline: none;
+    }
+}
+.boxed_btn3{
+    background: #A70000;
+    padding: 9px 26px;
+    margin-bottom: 0;
+    font-size: 20px; 
+    color: #fff;
+    @include transition(.5s);
+    display: inline-block;
+    &:hover{
+        background: #FAF0F0;
+        color: #A70000;
+    }
+    @media #{$tablet_device} {
+        padding: 9px 16px;
+    }
+}
+
+.boxed-btn4 {
+	background: transparent;
+	color: #A70000;
+	display: inline-block;
+	padding: 12px 44px;
+	font-family: $font2;
+	font-size: 16px;
+    font-weight: 400;
+    border: 0;
+    border: 1px solid #A70000;
+    // width: 180px;
+    text-align: center;
+    text-transform: capitalize;
+    &:hover{
+        background: #A70000;
+        color: #fff !important;
+        border: 1px solid transparent;
+    }
+    &:focus{
+        outline: none;
+    }
+    &.large-width{
+        width: 220px;
+    }
+}

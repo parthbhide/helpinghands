@@ -1,0 +1,100 @@
+.slider_bg_1{
+    background-image: url(../img/banner/1.png);
+}
+.slider_area{
+    height: 1000px;
+    position: relative;
+    z-index: 8;
+    height: 1000px;
+    position: relative;
+    z-index: 8;
+    background-repeat: no-repeat;
+    background-size: cover;
+    @media #{$mobile_device} {
+       height: 800px;
+      }
+    @media #{$tablet_device} {
+       height: 800px;
+      }
+    @media #{$mid_device} {
+       height: 800px;
+      }
+    &::before{
+        position: absolute;
+        content: "";
+        background: #450000;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        opacity: .8;
+    }
+    &::after{
+        position: absolute;
+        content: "";
+        background: #fff;
+        width: 100%;
+        height: 113px;
+        left: 0;
+        bottom: -60px;
+        -webkit-transform: skewY(3deg);
+    -ms-transform: skewY(3deg);
+        transform: skewY(3deg);
+        z-index: 99;
+    }
+    .single_slider{
+      position: relative;
+      z-index: 8;
+        .slider_text{
+            h3{
+             color: #ffffff;
+             font-weight: 900;
+             font-family: $font1;
+             font-size: 80px;
+             line-height: 90px;
+             position: relative;
+             z-index: 8;
+             text-transform: capitalize;
+             @media #{$mobile_device} {
+               font-size: 35px;
+               line-height: 46px;
+            }
+             @media #{$tablet_device} {
+               font-size: 30px;
+               line-height: 46px;
+            }
+             @media #{$mid_device} {
+               font-size: 35px;
+               line-height: 56px;
+            }
+            br{
+                @media #{$mobile_device} {
+                   display: none;
+                 }
+            }
+            }
+            p{
+                font-size: 20px;
+                font-weight: 400;
+                color: #ffffff;
+                margin-bottom: 60px;
+                margin-top: 8px;
+                line-height: 32px;
+             @media #{$mid_device} {
+                font-size: 16px;
+             }
+             br{
+                @media #{$mobile_device} {
+                   display: none;
+                 }
+                @media #{$tablet_device} {
+                   display: none;
+                 }
+                @media #{$mid_device} {
+                  //  display: none;
+                 }
+            }
+            }
+        }
+    } 
+}

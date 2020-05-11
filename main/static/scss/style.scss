@@ -1,0 +1,62 @@
+
+@import 'varriable.scss';
+@import 'mixins.scss';
+@import 'extend';
+@import 'responsive.scss';
+@import 'theme-default.scss';
+@import 'btn';
+@import 'section_title';
+@import 'slick-nav.scss';
+
+//Common
+@import 'common/extend.scss';
+@import 'common/fonts.scss';
+@import 'common/minxi.scss';
+@import 'common/variables.scss';
+@import 'common/global.scss';
+
+//layout
+@import 'layouts/main.scss';
+
+// Responsive
+@import 'layouts/responsive.scss';
+
+
+// header
+@import 'header';
+
+// slider
+@import 'slider';
+
+// causes
+@import 'causes';
+
+// about
+@import 'about';
+
+// about
+@import 'footer';
+
+// about
+@import 'bradcam';
+
+
+
+
+
+
+// other pages default
+
+// contact
+@import 'contact';
+
+// elements
+@import 'elements.scss';
+
+// blog
+@import 'blog';
+
+
+// blog part
+@import 'blog_part';
+

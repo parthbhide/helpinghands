@@ -1,0 +1,80 @@
+.section_title{
+    span{
+        color: #A70000;
+        font-size: 14px;
+        font-weight: 400;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+        display: block;
+    }
+    h3{
+        font-size: 46px;
+        line-height: 56px;
+        font-weight: 400;
+        color: #450000;
+        @media #{$mobile_device}{
+            font-size: 22px;
+            line-height: 30px;
+        }
+        @media #{$tablet_device}{
+            font-size: 25px;
+            line-height: 30px;
+        }
+        @media #{$mid_device}{
+            font-size: 30px;
+            line-height: 35px;
+        }
+        br{
+            @media #{$mobile_device}{
+                display: none;
+            }
+            @media #{$tablet_device}{
+                display: none;
+            }
+            @media #{$mid_device}{
+                display: none;
+            }
+        }
+    }
+}
+
+.seperator{
+	display: inline-block;
+	width: 90px;
+	height: 2px;
+	background: #131313;
+	margin-top: 30px;
+	margin-bottom: 36px;
+	@media #{$mobile_device} {
+		margin-top: 15px;
+		margin-bottom: 20px;
+	}
+	@media #{$tablet_device} {
+		margin-top: 15px;
+		margin-bottom: 10px;
+	}
+}
+
+
+.mb-95{
+	margin-bottom: 95px;
+	@media #{$mobile_device} {
+		margin-bottom: 30px;
+	}
+}
+
+.mb-80{
+	margin-bottom: 80px;
+	@media #{$mobile_device} {
+		margin-bottom: 30px;
+	}
+}
+.mb-60{
+	margin-bottom: 60px;
+	@media #{$mobile_device} {
+		margin-bottom: 30px;
+	}
+}
+.mb-20{
+    margin-bottom: 20px;
+}

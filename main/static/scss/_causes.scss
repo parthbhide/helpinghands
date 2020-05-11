@@ -1,0 +1,169 @@
+.causes_area {
+    position: relative;
+    z-index: 99;
+    padding-bottom: 115px;
+    margin-top: -130px;
+    @media #{$mobile_device} {
+        margin-top: 0;
+        padding-bottom: 80px;
+      }
+    @media #{$tablet_device} {
+        margin-top: 0;
+        padding-bottom: 80px;
+      }
+    @media #{$mid_device} {
+        margin-top: 0;
+        padding-bottom: 80px;
+      }
+    .causes_info{
+        p{
+           color: #4D4D4D;
+           margin-bottom: 0;
+           font-size: 16px;
+           line-height: 28px;
+           margin-top: 11px;
+            margin-bottom: 44px;
+            br{
+                @media #{$mobile_device}{
+                    display: none;
+                }
+                @media #{$tablet_device}{
+                    display: none;
+                }
+                @media #{$mid_device}{
+                    display: none;
+                }
+                @media #{$large_device}{
+                    display: none;
+                }
+            }
+
+        }
+        .target_rais_area{
+            -webkit-box-align: end;
+            -ms-flex-align: end;
+                align-items: flex-end;
+            @media #{$mobile_device}{
+                display: block !important;
+            }
+            .single_raise{
+                @media #{$mobile_device}{
+                    margin-bottom: 20px;
+                }
+                margin-right: 30px;
+                @media #{$tablet_device}{
+                    margin-right: 3px;
+                }
+                span{
+                    font-size: 14px;
+                    color: #919191;
+                    text-transform: capitalize;
+                    margin-bottom: 10px;
+                    display: block;
+                }
+                h4{
+                    color: #A70000;
+                    background: #FAF0F0;
+                    padding: 12px 26px;
+                    margin-bottom: 0;
+                    font-size: 20px;
+                    font-family: $font2;
+                    @media #{$tablet_device}{
+                        padding: 12px 21px;
+                    }
+                }
+            }
+            .doante_btn{
+            }
+        }
+    }
+    .causes_thumb{
+        overflow: hidden;
+        padding-bottom: 30px;
+        @media #{$mobile_device}{
+            margin-top: 30px;
+        }
+        img{
+            width: 100%;
+        }
+        .custom_progress_bar{
+            .progress{
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                height: 10px;
+                overflow: visible;
+                font-size: .75rem;
+                background-color: transparent;
+                border-radius: 0;
+                position: relative;
+                .progress-bar{
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-orient: vertical;
+                    -webkit-box-direction: normal;
+                    -ms-flex-direction: column;
+                    flex-direction: column;
+                    -webkit-box-pack: center;
+                    -ms-flex-pack: center;
+                    justify-content: center;
+                    color: #fff;
+                    text-align: center;
+                    background-color: #A70000;
+                    transition: width .6s ease;
+                    border-radius: 0;
+                    position: relative;
+                    z-index: 2;
+                    .value_progress{
+                        position: absolute;
+                        right: 0;
+                        width: 60px;
+                        height: 60px;
+                        background: #A70000;
+                        border-radius: 50%;
+                        font-size: 16px;
+                        font-weight: bold;
+                        line-height: 60px;
+                        text-align: center;
+                        span{
+                            position: relative;
+                            left: 2px;
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}
+.causes_area.causes_area2{
+    .causes_info{
+        padding-right: 40px;
+        @media #{$mobile_device} {
+            padding-right: 0;
+        }
+        @media #{$tablet_device} {
+            padding-right: 0;
+        }
+        @media #{$mid_device} {
+            padding-right: 0;
+        }
+        .section_title{
+            h4{
+                font-size: 24px;
+                color: #450000;
+                margin-bottom: 28px;
+            }
+        }
+        p{
+            margin-bottom: 10px;
+            &.last_para{
+                margin-bottom: 30px;
+            }
+        }
+        .target_rais{
+            margin-top: 35px !important;
+        }
+    }
+}

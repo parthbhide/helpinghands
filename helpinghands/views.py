@@ -16,7 +16,9 @@ import pandas as pd
 import numpy as np
 from jinja2 import Environment, FileSystemLoader
 from django.http import HttpResponse
-# from weasyprint import HTML
+from django.core.files.storage import FileSystemStorage
+from django.template.loader import render_to_string
+from weasyprint import HTML
 
 
 User = get_user_model()
@@ -267,13 +269,16 @@ def volunteerhome(request):
     date_d = donates_items_in.objects.all()
     p = {}
     
-    for _ in date_d:
+    for i in range(len(date_d)):
         curr_count = 1
-        curr_user = _.donor
-        for x in date_d:
-            if curr_user != x.donor:
-                curr_count += 1
-        p[_.date] = curr_count
+        curr_user = date_d[i].donor
+        if date_d[i].date not in p.keys():
+            for j in range(i+1,len(date_d)):
+                if curr_user != date_d[j].donor:
+                    if date_d[i].date == date_d[j].date:
+                        curr_count += 1
+                        curr_user = date_d[j].donor
+            p[date_d[i].date] = curr_count
 
 
     print(p)
@@ -341,7 +346,9 @@ def adminhome(request):
 
     donation_drive_report = pd.pivot_table(df, index=["Donor","Address", "Item"], values=["Qty"])
 
-    print(donation_drive_report.head())
+    donation_drive_report = donation_drive_report.reset_index()
+
+    print(donation_drive_report["Donor"])
 
     env = Environment(loader=FileSystemLoader('./templates'))
     template = env.get_template("myreport.html")
@@ -349,7 +356,15 @@ def adminhome(request):
     template_vars = {"title" : "Donation Drive Report",
                  "national_pivot_table": donation_drive_report.to_html()}
 
-    html_out = template.render(template_vars)
+    # midway = template.render(template_vars)
+
+    # html_out = render_to_string(template, template_vars)
+
+    html_out = render_to_string('myreport.html', {"title" : "Donation Drive Report",
+                 "national_pivot_table": donation_drive_report})
+
+    html = HTML(string=html_out)
+    html.write_pdf(target='mypdf.pdf');
 
 
     if request.method == "POST":

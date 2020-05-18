@@ -12,6 +12,11 @@ from datetime import date,datetime
 from main.models import receives_items_in
 from main.models import collected_by
 from main.models import donated_by
+import pandas as pd
+import numpy as np
+from jinja2 import Environment, FileSystemLoader
+from django.http import HttpResponse
+# from weasyprint import HTML
 
 
 User = get_user_model()
@@ -259,16 +264,19 @@ def volunteerhome(request):
             c[j] = q
             j +=1
             
-    do = donates_items_in.objects.all()
+    date_d = donates_items_in.objects.all()
     p = {}
-    count = 1
     
-    if(len(ob_volunteer)):
-        for _ in  do :
-            if ob_volunteer[0].date.date == _.date.date :
-                dis_flag = False
-                p[count] = _
-                count += 1
+    for _ in date_d:
+        curr_count = 1
+        curr_user = _.donor
+        for x in date_d:
+            if curr_user != x.donor:
+                curr_count += 1
+        p[_.date] = curr_count
+
+
+    print(p)
                 
             
                    
@@ -293,5 +301,62 @@ def volunteerhome(request):
         
     
     else:
-        return render(request,'volunteer-home.html',{'collection_dates': d , 'donation_dates' : c, 'c_flag': c_flag, 'c_e':c_e,'d_flag': d_flag, 'd_e':d_e, 'donor_detail' : p, 'dis_flag' : dis_flag, 'len' : range(len(p))})
+        return render(request,'volunteer-home.html',{'collection_dates': d , 'donation_dates' : c, 'c_flag': c_flag, 'c_e':c_e,'d_flag': d_flag, 'd_e':d_e, 'donor_detail' : p, 'dis_flag' : dis_flag})
+
+
+def adminhome(request):
+    collect = collection_drive.objects.all()
+    d = {}
+    i = 0
+    for p in collect:
+        if not(i < 3):
+            break
+        if p.date > date.today():
+             d[i] = p
+             i +=1
+
+
+    donate = donation_drive.objects.all()
+    c = {}
+    j = 0
+    for q in donate:
+        if not(j < 3):
+            break
+        if q.date > date.today():
+            c[j] = q
+            j +=1
+
+
+    columns=["Date","Donor","Address","Item","Qty"]
+    df = pd.DataFrame(columns=columns, dtype=float)
+    details = donates_items_in.objects.all()
+    for _ in details:
+        dic = {}
+        dic["Date"]     = _.date.date
+        dic["Donor"]    = str(_.donor.first_name) +" "+ str(_.donor.last_name)
+        dic["Address"]  =  _.donor.address
+        dic["Item"]     = _.category.category
+        dic["Qty"]      = _.quantity
+        df = df.append(dic, ignore_index= True)
+
+    donation_drive_report = pd.pivot_table(df, index=["Donor","Address", "Item"], values=["Qty"])
+
+    print(donation_drive_report.head())
+
+    env = Environment(loader=FileSystemLoader('./templates'))
+    template = env.get_template("myreport.html")
+
+    template_vars = {"title" : "Donation Drive Report",
+                 "national_pivot_table": donation_drive_report.to_html()}
+
+    html_out = template.render(template_vars)
+
+
+    if request.method == "POST":
+        if request.POST.get('collection_date',False):
+            return HttpResponse(html_out)
+
+
     
+
+    return render (request,'admin.html', {'collection_dates': d, 'donation_dates' : c })

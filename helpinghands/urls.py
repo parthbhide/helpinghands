@@ -27,7 +27,7 @@ urlpatterns = [
     path('logout/', views.logout, name = 'logout'),
     path('donorhome/', views.donorhome, name = 'donorhome'),
     path('receiverhome/', views.receiverhome, name = 'receiverhome'),
-    path('demo/', views.demo, name = 'demo'),
+    path('demo/', views.adminhome, name = 'demo'),
     path('contact/', views.contact, name = 'contact'),
     path('volunteerhome/',views.volunteerhome,name='volunteerhome'),
 ]

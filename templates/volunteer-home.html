@@ -124,13 +124,8 @@
          <tbody>
              {% for key,value in donor_detail.items %}
            <tr>
-             <th scope="row">{{ key }}</th>
-             <td>{{ value.donor.address }} </td>
-             <td> {{ value.donor }}</td>
-             <td> {{ value.date.date }}</td>
-             <td> {{ value.category.category }}</td>
-             <td> {{ value.quantity }}</td>
-             <td> {{ value.description }}</td>
+             <td style="text-align: center;">{{ key.date }}</td>
+             <td style="text-align: center;">{{ value }}</td>
            </tr>
             {% endfor %}
          </tbody>

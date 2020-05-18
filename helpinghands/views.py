@@ -348,7 +348,7 @@ def adminhome(request):
 
     donation_drive_report = donation_drive_report.reset_index()
 
-    print(donation_drive_report["Donor"])
+    print(type(donation_drive_report))
 
     env = Environment(loader=FileSystemLoader('./templates'))
     template = env.get_template("myreport.html")
@@ -356,15 +356,17 @@ def adminhome(request):
     template_vars = {"title" : "Donation Drive Report",
                  "national_pivot_table": donation_drive_report.to_html()}
 
-    # midway = template.render(template_vars)
+    html_out = template.render(template_vars)
+
+    HTML(string=html_out).write_pdf("mypdf.pdf")
 
     # html_out = render_to_string(template, template_vars)
 
-    html_out = render_to_string('myreport.html', {"title" : "Donation Drive Report",
-                 "national_pivot_table": donation_drive_report})
+    # html_out = render_to_string('myreport.html', {"title" : "Donation Drive Report",
+    #              "details": donation_drive_report})
 
-    html = HTML(string=html_out)
-    html.write_pdf(target='mypdf.pdf');
+    # html = HTML(string=html_out)
+    # html.write_pdf(target='mypdf.pdf');
 
 
     if request.method == "POST":

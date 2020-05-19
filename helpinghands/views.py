@@ -12,6 +12,13 @@ from datetime import date,datetime
 from main.models import receives_items_in
 from main.models import collected_by
 from main.models import donated_by
+import pandas as pd
+import numpy as np
+from jinja2 import Environment, FileSystemLoader
+from django.http import HttpResponse
+from django.core.files.storage import FileSystemStorage
+from django.template.loader import render_to_string
+from weasyprint import HTML
 
 
 User = get_user_model()
@@ -206,7 +213,7 @@ def receiverhome(request):
                 req_detail.quantity = int(request.POST[category_qty])
                 req_detail.receiver = request.user
                 if int(request.POST[category_qty]) > 0 and int(request.POST[category_qty]) <= x.quantity:
-                    req_detail.save()
+                    req_detail.save()   
                     
             return render(request, 'receiverloginscreen.html' ,{'error' : 'Your Request details are saved !! ', 'dates': c , 'len': range(len(c)), 'flag':flag, 'e':e, 'cloths' : cloths, 'stationary': stationary, 'footwear': footwear })
         else:
@@ -260,9 +267,7 @@ def volunteerhome(request):
             j +=1
             
     date_d = donates_items_in.objects.all()
-    date_r = receives_items_in.objects.all()
     p = {}
-    r = {}
     for i in range(len(date_d)):
         curr_count = 1
         curr_user = date_d[i].donor
@@ -273,28 +278,9 @@ def volunteerhome(request):
                         curr_count += 1
                         curr_user = date_d[j].donor
             p[date_d[i].date] = curr_count
-        
+
+
     print(p)
-    
-    for i in range(len(date_r)):
-        curr_count =1
-        curr_user = date_r[i].receiver
-        if(date_r[i].date not in r.keys()):
-            for j in range(i+1,len(date_r)):
-                if(curr_user!=date_r[j].receiver):
-                    if(date_r[i].date == date_r[j].date):
-                        curr_count += 1
-                        curr_user = date_r[j].receiver
-            r[date_r[i].date] = curr_count
-    
-    
-    
-    if(len(ob_volunteer)):
-        for _ in  do :
-            if ob_volunteer[0].date.date == _.date.date :
-                dis_flag = False
-                p[count] = _
-                count += 1
                 
             
                    
@@ -319,13 +305,81 @@ def volunteerhome(request):
         
     
     else:
-        return render(request,'volunteer-home.html',{'collection_dates': d , 'donation_dates' : c, 'c_flag': c_flag, 'c_e':c_e,'d_flag': d_flag, 'd_e':d_e, 'donor_detail' : p, 'receiver_detail' :r , 'dis_flag' : dis_flag,  })
+        return render(request,'volunteer-home.html',{'collection_dates': d , 'donation_dates' : c, 'c_flag': c_flag, 'c_e':c_e,'d_flag': d_flag, 'd_e':d_e, 'donor_detail' : p, 'dis_flag' : dis_flag})
+
+
+def adminhome(request):
+    collect = collection_drive.objects.all()
+    d = {}
+    i = 0
+    for p in collect:
+        if not(i < 3):
+            break
+        if p.date > date.today():
+             d[i] = p
+             i +=1
+
+
+    donate = donation_drive.objects.all()
+    c = {}
+    j = 0
+    for q in donate:
+        if not(j < 3):
+            break
+        if q.date > date.today():
+            c[j] = q
+            j +=1
+
+
+    columns=["Date","Donor","Address","Item","Qty"]
+    df = pd.DataFrame(columns=columns, dtype=float)
+    details = donates_items_in.objects.all()
+    for _ in details:
+        dic = {}
+        dic["Date"]     = _.date.date
+        dic["Donor"]    = str(_.donor.first_name) +" "+ str(_.donor.last_name)
+        dic["Address"]  =  _.donor.address
+        dic["Item"]     = _.category.category
+        dic["Qty"]      = int(_.quantity)
+        dic["Contact"]  = _.donor.contact_number
+
+        df = df.append(dic, ignore_index= True)
+
+    donation_drive_report = pd.pivot_table(df, index=["Donor","Address","Contact", "Item"], values=["Qty"])
+
+    # donation_drive_report = donation_drive_report.reset_index()
+
+    # print(type(donation_drive_report))
+
+    env = Environment(loader=FileSystemLoader('./templates'))
+    template = env.get_template("myreport.html")
+
+    template_vars = {"title" : "Donation Drive Report",
+                 "national_pivot_table": donation_drive_report.to_html(), "date": date.today()}
+
+    html_out = template.render(template_vars)
+
+    HTML(string=html_out).write_pdf("mypdf.pdf")
+
+    # html_out = render_to_string(template, template_vars)
+
+    # html_out = render_to_string('myreport.html', {"title" : "Donation Drive Report",
+    #              "details": donation_drive_report})
+
+    # html = HTML(string=html_out)
+    # html.write_pdf(target='mypdf.pdf');
+
+
+    if request.method == "POST":
+        if request.POST.get('collection_date',False):
+            # return HttpResponse(html_out)
+            fs = FileSystemStorage('.')
+            with fs.open('mypdf.pdf') as pdf:
+                response = HttpResponse(pdf, content_type='application/pdf')
+                response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+                return response
+
+
     
-   
-    
-        
-    
-    
-                
-        
-    
+
+    return render (request,'admin.html', {'collection_dates': d, 'donation_dates' : c })

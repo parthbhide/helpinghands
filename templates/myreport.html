@@ -1,0 +1,21 @@
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+<style type="text/css">
+	table , th, td {
+		border: 1px solid black;
+		text-align: center;
+		border-collapse: collapse;
+	}
+	td {
+
+		white-space:nowrap;
+	}
+</style>
+</head>
+<body>
+    <h2>Donation Drive Report for Date {{ date }}</h2>
+     {{ national_pivot_table }}
+</body>
+</html> 

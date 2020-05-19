@@ -194,11 +194,11 @@ def receiverhome(request):
             i += 1
     #gets quantity and category of all objects of stock
     for cs in curr_stock:
-        if cs.category == 'Cloths':
+        if cs.category == 'cloths':
             cloths = cs.quantity
-        if cs.category == 'Stationary':
+        if cs.category == 'stationary':
             stationary = cs.quantity
-        if cs.category == 'Footwear':
+        if cs.category == 'footwear':
             footwear = cs.quantity
             
     if request.method == 'POST':
@@ -213,7 +213,7 @@ def receiverhome(request):
                 req_detail.quantity = int(request.POST[category_qty])
                 req_detail.receiver = request.user
                 if int(request.POST[category_qty]) > 0 and int(request.POST[category_qty]) <= x.quantity:
-                    req_detail.save()
+                    req_detail.save()   
                     
             return render(request, 'receiverloginscreen.html' ,{'error' : 'Your Request details are saved !! ', 'dates': c , 'len': range(len(c)), 'flag':flag, 'e':e, 'cloths' : cloths, 'stationary': stationary, 'footwear': footwear })
         else:
@@ -341,20 +341,22 @@ def adminhome(request):
         dic["Donor"]    = str(_.donor.first_name) +" "+ str(_.donor.last_name)
         dic["Address"]  =  _.donor.address
         dic["Item"]     = _.category.category
-        dic["Qty"]      = _.quantity
+        dic["Qty"]      = int(_.quantity)
+        dic["Contact"]  = _.donor.contact_number
+
         df = df.append(dic, ignore_index= True)
 
-    donation_drive_report = pd.pivot_table(df, index=["Donor","Address", "Item"], values=["Qty"])
+    donation_drive_report = pd.pivot_table(df, index=["Donor","Address","Contact", "Item"], values=["Qty"])
 
-    donation_drive_report = donation_drive_report.reset_index()
+    # donation_drive_report = donation_drive_report.reset_index()
 
-    print(type(donation_drive_report))
+    # print(type(donation_drive_report))
 
     env = Environment(loader=FileSystemLoader('./templates'))
     template = env.get_template("myreport.html")
 
     template_vars = {"title" : "Donation Drive Report",
-                 "national_pivot_table": donation_drive_report.to_html()}
+                 "national_pivot_table": donation_drive_report.to_html(), "date": date.today()}
 
     html_out = template.render(template_vars)
 

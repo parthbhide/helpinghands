@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'helpinghands.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'helpinghands',
+        'NAME': 'demo',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

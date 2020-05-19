@@ -187,11 +187,11 @@ def receiverhome(request):
             i += 1
     #gets quantity and category of all objects of stock
     for cs in curr_stock:
-        if cs.category == 'Cloths':
+        if cs.category == 'cloths':
             cloths = cs.quantity
-        if cs.category == 'Stationary':
+        if cs.category == 'stationary':
             stationary = cs.quantity
-        if cs.category == 'Footwear':
+        if cs.category == 'footwear':
             footwear = cs.quantity
             
     if request.method == 'POST':
@@ -259,9 +259,35 @@ def volunteerhome(request):
             c[j] = q
             j +=1
             
-    do = donates_items_in.objects.all()
+    date_d = donates_items_in.objects.all()
+    date_r = receives_items_in.objects.all()
     p = {}
-    count = 1
+    r = {}
+    for i in range(len(date_d)):
+        curr_count = 1
+        curr_user = date_d[i].donor
+        if date_d[i].date not in p.keys():
+            for j in range(i+1,len(date_d)):
+                if curr_user != date_d[j].donor:
+                    if date_d[i].date == date_d[j].date:
+                        curr_count += 1
+                        curr_user = date_d[j].donor
+            p[date_d[i].date] = curr_count
+        
+    print(p)
+    
+    for i in range(len(date_r)):
+        curr_count =1
+        curr_user = date_r[i].receiver
+        if(date_r[i].date not in r.keys()):
+            for j in range(i+1,len(date_r)):
+                if(curr_user!=date_r[j].receiver):
+                    if(date_r[i].date == date_r[j].date):
+                        curr_count += 1
+                        curr_user = date_r[j].receiver
+            r[date_r[i].date] = curr_count
+    
+    
     
     if(len(ob_volunteer)):
         for _ in  do :
@@ -293,5 +319,13 @@ def volunteerhome(request):
         
     
     else:
-        return render(request,'volunteer-home.html',{'collection_dates': d , 'donation_dates' : c, 'c_flag': c_flag, 'c_e':c_e,'d_flag': d_flag, 'd_e':d_e, 'donor_detail' : p, 'dis_flag' : dis_flag, 'len' : range(len(p))})
+        return render(request,'volunteer-home.html',{'collection_dates': d , 'donation_dates' : c, 'c_flag': c_flag, 'c_e':c_e,'d_flag': d_flag, 'd_e':d_e, 'donor_detail' : p, 'receiver_detail' :r , 'dis_flag' : dis_flag,  })
+    
+   
+    
+        
+    
+    
+                
+        
     

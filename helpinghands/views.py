@@ -341,14 +341,16 @@ def adminhome(request):
         dic["Donor"]    = str(_.donor.first_name) +" "+ str(_.donor.last_name)
         dic["Address"]  =  _.donor.address
         dic["Item"]     = _.category.category
-        dic["Qty"]      = int(_.quantity)
-        dic["Contact"]  = _.donor.contact_number
+        dic["Quantity"]      = int(_.quantity)
+        dic["Contact"]  = str(_.donor.contact_number)
 
         df = df.append(dic, ignore_index= True)
 
-    donation_drive_report = pd.pivot_table(df, index=["Donor","Address","Contact", "Item"], values=["Qty"])
+    donation_drive_report = pd.pivot_table(df, index=["Donor","Address","Contact", "Item"], values=["Quantity"])
 
     # donation_drive_report = donation_drive_report.reset_index()
+
+    # donation_drive_report.index += 1
 
     # print(type(donation_drive_report))
 

@@ -371,7 +371,12 @@ def adminhome(request):
 
     if request.method == "POST":
         if request.POST.get('collection_date',False):
-            return HttpResponse(html_out)
+            # return HttpResponse(html_out)
+            fs = FileSystemStorage('.')
+            with fs.open('mypdf.pdf') as pdf:
+                response = HttpResponse(pdf, content_type='application/pdf')
+                response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+                return response
 
 
     

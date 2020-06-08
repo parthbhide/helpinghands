@@ -19,6 +19,13 @@ from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from django.template.loader import render_to_string
 from weasyprint import HTML
+from io import BytesIO
+from io import StringIO
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from fpdf import FPDF
+import pdfkit
 
 
 User = get_user_model()
@@ -340,19 +347,23 @@ def adminhome(request):
         dic["Donor"]    = str(_.donor.first_name) +" "+ str(_.donor.last_name)
         dic["Address"]  =  _.donor.address
         dic["Item"]     = _.category.category
-        dic["Qty"]      = int(_.quantity)
-        dic["Contact"]  = _.donor.contact_number
+        dic["Quantity"]      = int(_.quantity)
+        dic["Contact"]  = str(_.donor.contact_number)
 
         df = df.append(dic, ignore_index= True)
 
-    donation_drive_report = pd.pivot_table(df, index=["Donor","Address","Contact", "Item"], values=["Qty"])
+    donation_drive_report = pd.pivot_table(df, index=["Donor","Address","Contact", "Item"], values=["Quantity"])
 
     # donation_drive_report = donation_drive_report.reset_index()
+
+    # donation_drive_report.index += 1
 
     # print(type(donation_drive_report))
 
     env = Environment(loader=FileSystemLoader('./templates'))
     template = env.get_template("myreport.html")
+
+
 
     template_vars = {"title" : "Donation Drive Report",
                  "national_pivot_table": donation_drive_report.to_html(), "date": date.today()}
@@ -361,20 +372,12 @@ def adminhome(request):
 
     HTML(string=html_out).write_pdf("mypdf.pdf")
 
-    # html_out = render_to_string(template, template_vars)
-
-    # html_out = render_to_string('myreport.html', {"title" : "Donation Drive Report",
-    #              "details": donation_drive_report})
-
-    # html = HTML(string=html_out)
-    # html.write_pdf(target='mypdf.pdf');
-
 
     if request.method == "POST":
         if request.POST.get('collection_date',False):
             # return HttpResponse(html_out)
             fs = FileSystemStorage('.')
-            with fs.open('mypdf.pdf') as pdf:
+            with fs.open('out.pdf') as pdf:
                 response = HttpResponse(pdf, content_type='application/pdf')
                 response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
                 return response

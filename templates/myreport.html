@@ -2,20 +2,30 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>{{ title }}</title>
-<style type="text/css">
-	table , th, td {
-		border: 1px solid black;
-		text-align: center;
-		border-collapse: collapse;
+	<style type="text/css">
+	body {
+	  font-size: 75%;
+	  color: #222;
+	  background: #fff;
+	  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
 	}
-	td {
 
-		white-space:nowrap;
+	table       { margin-bottom: 1.4em; width:100%; border: 1px solid ; border-collapse: collapse; text-align: center;}
+	th          { font-weight: bold; border: 1px solid; border-collapse: collapse;}
+	thead th    { background: #c3d9ff; border: 1px solid; border-collapse: collapse;}
+	th,td,caption { padding: 4px 10px 4px 5px; border: 1px solid; border-collapse: collapse;}
+	tbody tr:nth-child(even) td, 
+	tbody tr.even td  { 
+		background: #e5ecf9; 
 	}
-</style>
+	tfoot       { font-style: italic; }
+	caption     { background: #eee; }
+	</style>
 </head>
 <body>
-    <h2>Donation Drive Report for Date {{ date }}</h2>
+    <h3 style="text-align: center;">Donation Drive Report for Date {{ date }}</h3>
+    <hr>
+    <br>
      {{ national_pivot_table }}
 </body>
 </html> 

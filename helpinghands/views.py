@@ -19,6 +19,13 @@ from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from django.template.loader import render_to_string
 from weasyprint import HTML
+from io import BytesIO
+from io import StringIO
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from fpdf import FPDF
+import pdfkit
 
 
 User = get_user_model()
@@ -357,6 +364,8 @@ def adminhome(request):
     env = Environment(loader=FileSystemLoader('./templates'))
     template = env.get_template("myreport.html")
 
+
+
     template_vars = {"title" : "Donation Drive Report",
                  "national_pivot_table": donation_drive_report.to_html(), "date": date.today()}
 
@@ -364,20 +373,12 @@ def adminhome(request):
 
     HTML(string=html_out).write_pdf("mypdf.pdf")
 
-    # html_out = render_to_string(template, template_vars)
-
-    # html_out = render_to_string('myreport.html', {"title" : "Donation Drive Report",
-    #              "details": donation_drive_report})
-
-    # html = HTML(string=html_out)
-    # html.write_pdf(target='mypdf.pdf');
-
 
     if request.method == "POST":
         if request.POST.get('collection_date',False):
             # return HttpResponse(html_out)
             fs = FileSystemStorage('.')
-            with fs.open('mypdf.pdf') as pdf:
+            with fs.open('out.pdf') as pdf:
                 response = HttpResponse(pdf, content_type='application/pdf')
                 response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
                 return response

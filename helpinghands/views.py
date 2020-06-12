@@ -12,6 +12,7 @@ from datetime import date,datetime
 from main.models import receives_items_in
 from main.models import collected_by
 from main.models import donated_by
+from main.models import reports
 import pandas as pd
 import numpy as np
 from jinja2 import Environment, FileSystemLoader
@@ -26,6 +27,7 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from fpdf import FPDF
 import pdfkit
+from helpinghands.settings import MEDIA_ROOT
 
 
 User = get_user_model()
@@ -371,14 +373,26 @@ def adminhome(request):
 
     html_out = template.render(template_vars)
 
-    HTML(string=html_out).write_pdf("mypdf.pdf")
+    HTML(string=html_out).write_pdf(MEDIA_ROOT + "reports/mypdf.pdf")
+
+
+    new_report = reports()
+
+    new_report.donation_drive_date = donation_drive.objects.last()
+    new_report.filepath =  'reports/mypdf.pdf'
+    new_report.save()
+
+    f_ob = reports.objects.last()
+    f = str(f_ob.filepath)
+
+    print(f)
 
 
     if request.method == "POST":
-        if request.POST.get('collection_date',False):
+        if request.POST.get('collection_date',True):
             # return HttpResponse(html_out)
-            fs = FileSystemStorage('.')
-            with fs.open('out.pdf') as pdf:
+            fs = FileSystemStorage(MEDIA_ROOT )
+            with fs.open(f) as pdf:
                 response = HttpResponse(pdf, content_type='application/pdf')
                 response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
                 return response

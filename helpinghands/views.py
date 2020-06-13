@@ -323,22 +323,16 @@ def adminhome(request):
     d = {}
     i = 0
     for p in collect:
-        if not(i < 3):
-            break
-        if p.date > date.today():
-             d[i] = p
-             i +=1
+        d[i] = p
+        i +=1
 
 
     donate = donation_drive.objects.all()
     c = {}
     j = 0
     for q in donate:
-        if not(j < 3):
-            break
-        if q.date > date.today():
-            c[j] = q
-            j +=1
+        c[j] = q
+        j +=1
 
 
     columns=["Date","Donor","Address","Item","Qty"]
@@ -391,7 +385,7 @@ def adminhome(request):
     if request.method == "POST":
         if request.POST.get('collection_date',True):
             # return HttpResponse(html_out)
-            fs = FileSystemStorage(MEDIA_ROOT )
+            fs = FileSystemStorage(MEDIA_ROOT)
             with fs.open(f) as pdf:
                 response = HttpResponse(pdf, content_type='application/pdf')
                 response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'

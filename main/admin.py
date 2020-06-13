@@ -10,6 +10,8 @@ from .models import donated_by
 from .models import donates_items_in
 from .models import receives_items_in
 from .models import User
+from .models import file
+from .models import dstock
 
 # Register your models here.
 admin.site.register(User)
@@ -23,3 +25,5 @@ admin.site.register(collected_by)
 admin.site.register(donated_by)
 admin.site.register(donates_items_in)
 admin.site.register(receives_items_in)
+admin.site.register(file)
+admin.site.register(dstock)

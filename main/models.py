@@ -80,8 +80,8 @@ class receives_items_in(models.Model):
         db_table = 'receives_items_in'
 
 class reports(models.Model):
-    donation_drive_date = models.ForeignKey(donation_drive, null=True, on_delete=models.CASCADE)
-    collection_drive_date = models.ForeignKey(collection_drive, null=True, on_delete=models.CASCADE)
-    filepath= models.FileField(upload_to='files/', null=False, default="")
+    donation_drive_date = models.OneToOneField(donation_drive, on_delete = models.CASCADE, null = True)
+    collection_drive_date = models.OneToOneField(collection_drive, on_delete = models.CASCADE, null = True)
+    filepath = models.FileField(upload_to='files/', null=False, default="")
     class Meta:
         db_table = 'reports'

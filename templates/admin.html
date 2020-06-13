@@ -38,6 +38,23 @@
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
+.popup-modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: #5cb85c; /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  -webkit-animation-name: fadeIn; /* Fade in the background */
+  -webkit-animation-duration: 0.4s;
+  animation-name: fadeIn;
+  animation-duration: 0.4s
+}
+
 /* Modal Content */
 .modal-content {
   background-color: #fefefe;
@@ -64,6 +81,27 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+@-webkit-keyframes slideIn {
+  from {bottom: -300px; opacity: 0} 
+  to {bottom: 0; opacity: 1}
+}
+
+@keyframes slideIn {
+  from {bottom: -300px; opacity: 0}
+  to {bottom: 0; opacity: 1}
+}
+
+@-webkit-keyframes fadeIn {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+
 </style>
 </head>
 <body>
@@ -226,14 +264,20 @@
                                     <div class="form-radio">
                                          {% for key,value in donation_dates.items %}
                                            <input type="radio" name="donation_date" value="{{ key }}" id="d{{ key }}" />
-                                           <label for="d{{ key }}"> {{ value.date }} </label>
+                                           <label for="d{{ key }}" style="margin: 0.5%;"> {{ value.date }} </label>
                                           {% endfor %}        
                                     </div>     
-                                    <button type="submit" id="btnSearch" class="btn btn-update" style=" margin: 10px;" OnClick="btnSearch_Click">Genrate Report</button>
+                                    <button type="submit" id="donationsubmit" class="btn btn-update" style=" margin: 10px;" >Genrate Report</button>
                                 </form>
                             </div>
                       </div>
                     </div>
+                    {% if NoDonationDrive %}
+                            <script>alert("Unable to genrate report for the selected date. No Donation Drive occured on the selected Date !");</script>
+                    {% endif %}
+                    {% if NoReceiver %}
+                        <script>alert("Unable to genrate report for the selected date. No Receiver registered for the selected date !");</script>
+                    {% endif %}
                 </div>
  
                 <div style="margin: 10px; float: right;">
@@ -251,16 +295,20 @@
                                     <div class="form-radio">
                                         {% for key,value in collection_dates.items %}
                                            <input type="radio" name="collection_date" value="{{ key }}" id="c{{ key }}" />
-                                           <label for="c{{ key }}"> {{ value.date }} </label>
+                                           <label for="c{{ key }}" style="margin: 0.5%;"> {{ value.date }} </label>
                                         {% endfor %}
                                     </div> 
-                                    <button type = "submit" id="btnClear" class="btn btn-update" style=" margin: 10px;" OnClick="btnClear_Click">Genrate report</button>
+                                    <button type = "submit" id="collectionsubmit" class="btn btn-update" style=" margin: 10px;" >Genrate report</button>
                                 </form> 
                             </div>
                       </div>
-
+                        {% if NoCollectionDrive %}
+                            <script>alert("Unable to genrate report for the selected date. No Collection Drive occured on the selected Date !");</script>
+                        {% endif %}
+                        {% if NoDonor %}
+                            <script>alert("Unable to genrate report for the selected date. No Donor registered for the selected date !");</script>
+                        {% endif %}
                     </div>
-
 
                 </div>
          </div>
@@ -283,6 +331,12 @@ var span1 = document.getElementsByClassName("close")[0];
 
 var span2 = document.getElementsByClassName("close")[1];
 
+var span3 = document.getElementsByClassName("close")[2];
+
+var donationsubmit = document.getElementById("donationsubmit");
+
+var collectionsubmit = document.getElementById("collectionsubmit");
+
 // When the user clicks the button, open the modal 
 btn1.onclick = function() {
   donationModal.style.display = "block";
@@ -299,6 +353,16 @@ span1.onclick = function() {
 
 span2.onclick = function() {
         collectionModal.style.display = "none";
+}
+
+donationsubmit.onclick = function() {
+        donationModal.style.display = "none";
+
+}
+
+collectionsubmit.onclick = function() {
+        collectionModal.style.display = "none";
+
 }
 
 // When the user clicks anywhere outside of the modal, close it

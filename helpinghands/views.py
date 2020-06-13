@@ -335,21 +335,21 @@ def adminhome(request):
         j +=1
 
 
-    columns=["Date","Donor","Address","Item","Qty"]
-    df = pd.DataFrame(columns=columns, dtype=float)
-    details = donates_items_in.objects.all()
-    for _ in details:
-        dic = {}
-        dic["Date"]     = _.date.date
-        dic["Donor"]    = str(_.donor.first_name) +" "+ str(_.donor.last_name)
-        dic["Address"]  =  _.donor.address
-        dic["Item"]     = _.category.category
-        dic["Quantity"]      = int(_.quantity)
-        dic["Contact"]  = str(_.donor.contact_number)
+    # columns=["Date","Donor","Address","Item","Qty"]
+    # df = pd.DataFrame(columns=columns, dtype=float)
+    # details = donates_items_in.objects.all()
+    # for _ in details:
+    #     dic = {}
+    #     dic["Date"]     = _.date.date
+    #     dic["Donor"]    = str(_.donor.first_name) +" "+ str(_.donor.last_name)
+    #     dic["Address"]  =  _.donor.address
+    #     dic["Item"]     = _.category.category
+    #     dic["Quantity"]      = int(_.quantity)
+    #     dic["Contact"]  = str(_.donor.contact_number)
 
-        df = df.append(dic, ignore_index= True)
+    #     df = df.append(dic, ignore_index= True)
 
-    donation_drive_report = pd.pivot_table(df, index=["Donor","Address","Contact", "Item"], values=["Quantity"])
+    # donation_drive_report = pd.pivot_table(df, index=["Donor","Address","Contact", "Item"], values=["Quantity"])
 
     # donation_drive_report = donation_drive_report.reset_index()
 
@@ -362,34 +362,261 @@ def adminhome(request):
 
 
 
-    template_vars = {"title" : "Donation Drive Report",
-                 "national_pivot_table": donation_drive_report.to_html(), "date": date.today()}
+    # template_vars = {"title" : "Donation Drive Report",
+    #              "national_pivot_table": donation_drive_report.to_html(), "date": date.today()}
 
-    html_out = template.render(template_vars)
+    # html_out = template.render(template_vars)
 
-    HTML(string=html_out).write_pdf(MEDIA_ROOT + "reports/mypdf.pdf")
+    # HTML(string=html_out).write_pdf(MEDIA_ROOT + "reports/mypdf.pdf")
 
 
-    new_report = reports()
+    # new_report = reports()
 
-    new_report.donation_drive_date = donation_drive.objects.last()
-    new_report.filepath =  'reports/mypdf.pdf'
-    new_report.save()
+    # new_report.donation_drive_date = donation_drive.objects.last()
+    # new_report.filepath =  'reports/mypdf.pdf'
+    # new_report.save()
 
-    f_ob = reports.objects.last()
-    f = str(f_ob.filepath)
+    # f_ob = reports.objects.last()
+    # f = str(f_ob.filepath)
 
-    print(f)
+    # print(f)
 
 
     if request.method == "POST":
-        if request.POST.get('collection_date',True):
-            # return HttpResponse(html_out)
-            fs = FileSystemStorage(MEDIA_ROOT)
-            with fs.open(f) as pdf:
-                response = HttpResponse(pdf, content_type='application/pdf')
-                response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+        #To genrate collection drive reports
+        if request.POST.get('collection_date',False):
+            collection_date_index = int(request.POST.get('collection_date',False))
+
+            #if collection drive date has occured, we dont need to genrate report , just display report by fetching from database
+            if(d[collection_date_index].date < date.today()):
+                try :                         
+                    f_ob = reports.objects.filter(collection_drive_date=d[collection_date_index])
+                    f_ob = f_ob[0]
+                    filepath = str(f_ob.filepath)
+                except :
+                    details = donates_items_in.objects.filter(date = d[collection_date_index])
+                    if(len(details) == 0):
+                        return render (request,'admin.html', {'collection_dates': d, 'donation_dates' : c, 'NoCollectionDrive' : True })
+                    else:
+                        columns=["Date","Donor","Address","Item","Qty"]
+                        df = pd.DataFrame(columns=columns, dtype=float)
+                        for _ in details:
+                            dic = {}
+                            dic["Date"]     = _.date.date
+                            dic["Donor"]    = str(_.donor.first_name) +" "+ str(_.donor.last_name)
+                            dic["Address"]  =  _.donor.address
+                            dic["Item"]     = _.category.category
+                            dic["Quantity"]      = int(_.quantity)
+                            dic["Contact"]  = str(_.donor.contact_number)
+
+                            df = df.append(dic, ignore_index= True)
+
+                        collection_drive_report = pd.pivot_table(df, index=["Donor","Address","Contact", "Item"], values=["Quantity"])
+
+                        template_vars = {"title" : "Collection Drive Report",
+                             "national_pivot_table": collection_drive_report.to_html(), "date": d[collection_date_index].date}
+
+                        html_out = template.render(template_vars)
+
+                        HTML(string=html_out).write_pdf(MEDIA_ROOT + f'reports/collection drive reports/{d[collection_date_index].date}.pdf')
+
+                        new_report = reports()
+                        new_report.collection_drive_date = d[collection_date_index]
+                        new_report.filepath =  f'reports/collection drive reports/{d[collection_date_index].date}.pdf'
+                        new_report.save()
+
+
+                        f_ob = reports.objects.filter(collection_drive_date=d[collection_date_index])
+                        f_ob = f_ob[0]
+                        filepath = str(f_ob.filepath)
+
+                            
+
+                        fs = FileSystemStorage(MEDIA_ROOT)
+                        with fs.open(filepath) as pdf:
+                            response = HttpResponse(pdf, content_type='application/pdf')
+                            response['Content-Disposition'] = 'attachment; filename= "{}.pdf"'.format(d[collection_date_index].date)
+
+                        return response
+
+
+
+                fs = FileSystemStorage(MEDIA_ROOT)
+                with fs.open(filepath) as pdf:
+                    response = HttpResponse(pdf, content_type='application/pdf')
+                    response['Content-Disposition'] = 'attachment; filename= "{}.pdf"'.format(d[collection_date_index].date)
+
                 return response
+
+            #if collection drive is pending, we need to genrate report as it may contain updation, hence delete old record form database
+            #and add new record
+            else:
+                details = donates_items_in.objects.filter(date = d[collection_date_index])
+                if(len(details) == 0):
+                    return render (request,'admin.html', {'collection_dates': d, 'donation_dates' : c, 'NoDonor' : True })
+                columns=["Date","Donor","Address","Item","Qty"]
+                df = pd.DataFrame(columns=columns, dtype=float)
+                for _ in details:
+                    dic = {}
+                    dic["Date"]     = _.date.date
+                    dic["Donor"]    = str(_.donor.first_name) +" "+ str(_.donor.last_name)
+                    dic["Address"]  =  _.donor.address
+                    dic["Item"]     = _.category.category
+                    dic["Quantity"]      = int(_.quantity)
+                    dic["Contact"]  = str(_.donor.contact_number)
+
+                    df = df.append(dic, ignore_index= True)
+
+                collection_drive_report = pd.pivot_table(df, index=["Donor","Address","Contact", "Item"], values=["Quantity"])
+
+                template_vars = {"title" : "Collection Drive Report",
+                     "national_pivot_table": collection_drive_report.to_html(), "date": d[collection_date_index].date}
+
+                html_out = template.render(template_vars)
+
+                HTML(string=html_out).write_pdf(MEDIA_ROOT + f'reports/collection drive reports/{d[collection_date_index].date}.pdf')
+
+                try:
+                    old_entry = reports.objects.get(collection_drive_date=d[collection_date_index])
+                    old_entry.delete()
+                except:
+                    pass
+
+                new_report = reports()
+                new_report.collection_drive_date = d[collection_date_index]
+                new_report.filepath =  f'reports/collection drive reports/{d[collection_date_index].date}.pdf'
+                new_report.save()
+
+
+                f_ob = reports.objects.filter(collection_drive_date=d[collection_date_index])
+                f_ob = f_ob[0]
+                filepath = str(f_ob.filepath)
+
+                    
+
+                fs = FileSystemStorage(MEDIA_ROOT)
+                with fs.open(filepath) as pdf:
+                    response = HttpResponse(pdf, content_type='application/pdf')
+                    response['Content-Disposition'] = 'attachment; filename= "{}.pdf"'.format(d[collection_date_index].date)
+
+                return response
+
+        #to genrate donation drive reports
+        else:
+            donation_date_index = int(request.POST.get('donation_date',False))
+
+            #if collection drive date has occured, we dont need to genrate report , just display report by fetching from database
+            if(c[donation_date_index].date < date.today()):
+                try :                         
+                    f_ob = reports.objects.filter(donation_drive_date=c[donation_date_index])
+                    f_ob = f_ob[0]
+                    filepath = str(f_ob.filepath)
+                except :
+                    details = receives_items_in.objects.filter(date = c[donation_date_index])
+                    if(len(details) == 0):
+                        return render (request,'admin.html', {'collection_dates': d, 'donation_dates' : c, 'NoDonationDrive' : True })
+                    else:
+                        columns=["Date","Receiver","Address","Item","Qty"]
+                        df = pd.DataFrame(columns=columns, dtype=float)
+                        for _ in details:
+                            dic = {}
+                            dic["Date"]     = _.date.date
+                            dic["Receiver"]    = str(_.receiver.ngo_name)
+                            dic["Address"]  =  _.receiver.address
+                            dic["Item"]     = _.category.category
+                            dic["Quantity"]      = int(_.quantity)
+                            dic["Contact"]  = str(_.receiver.contact_number)
+
+                            df = df.append(dic, ignore_index= True)
+
+                        donation_drive_report = pd.pivot_table(df, index=["Receiver","Address","Contact", "Item"], values=["Quantity"])
+
+                        template_vars = {"title" : "Donation Drive Report",
+                             "national_pivot_table": donation_drive_report.to_html(), "date": c[donation_date_index].date}
+
+                        html_out = template.render(template_vars)
+
+                        HTML(string=html_out).write_pdf(MEDIA_ROOT + f'reports/donation drive reports/{c[donation_date_index].date}.pdf')
+
+                        new_report = reports()
+                        new_report.donation_drive_date = c[donation_date_index]
+                        new_report.filepath =  f'reports/donation drive reports/{c[donation_date_index].date}.pdf'
+                        new_report.save()
+
+
+                        f_ob = reports.objects.filter(donation_drive_date=c[donation_date_index])
+                        f_ob = f_ob[0]
+                        filepath = str(f_ob.filepath)
+
+                            
+
+                        fs = FileSystemStorage(MEDIA_ROOT)
+                        with fs.open(filepath) as pdf:
+                            response = HttpResponse(pdf, content_type='application/pdf')
+                            response['Content-Disposition'] = 'attachment; filename= "{}.pdf"'.format(c[donation_date_index].date)
+
+                        return response
+
+                fs = FileSystemStorage(MEDIA_ROOT)
+                with fs.open(filepath) as pdf:
+                    response = HttpResponse(pdf, content_type='application/pdf')
+                    response['Content-Disposition'] = 'attachment; filename= "{}.pdf"'.format(c[donation_date_index].date)
+
+                return response
+
+            #if collection drive is pending, we need to genrate report as it may contain updation, hence delete old record form database
+            #and add new record
+            else:
+                details = receives_items_in.objects.filter(date = c[donation_date_index])
+                if(len(details) == 0):
+                    return render (request,'admin.html', {'collection_dates': d, 'donation_dates' : c, 'NoReceiver' : True })
+                columns=["Date","Receiver","Address","Item","Qty"]
+                df = pd.DataFrame(columns=columns, dtype=float)
+                for _ in details:
+                    dic = {}
+                    dic["Date"]     = _.date.date
+                    dic["Receiver"]    = str(_.receiver.ngo_name)
+                    dic["Address"]  =  _.receiver.address
+                    dic["Item"]     = _.category.category
+                    dic["Quantity"]      = int(_.quantity)
+                    dic["Contact"]  = str(_.receiver.contact_number)
+
+                    df = df.append(dic, ignore_index= True)
+
+                donation_drive_report = pd.pivot_table(df, index=["Receiver","Address","Contact", "Item"], values=["Quantity"])
+
+                template_vars = {"title" : "Donation Drive Report",
+                     "national_pivot_table": donation_drive_report.to_html(), "date": c[donation_date_index].date}
+
+                html_out = template.render(template_vars)
+
+                HTML(string=html_out).write_pdf(MEDIA_ROOT + f'reports/donation drive reports/{c[donation_date_index].date}.pdf')
+
+                try:
+                    old_entry = reports.objects.get(donation_drive_date=c[donation_date_index])
+                    old_entry.delete()
+                except:
+                    pass
+
+                new_report = reports()
+                new_report.donation_drive_date = c[donation_date_index]
+                new_report.filepath =  f'reports/donation drive reports/{c[donation_date_index].date}.pdf'
+                new_report.save()
+
+
+                f_ob = reports.objects.filter(donation_drive_date=c[donation_date_index])
+                f_ob = f_ob[0]
+                filepath = str(f_ob.filepath)
+
+                    
+
+                fs = FileSystemStorage(MEDIA_ROOT)
+                with fs.open(filepath) as pdf:
+                    response = HttpResponse(pdf, content_type='application/pdf')
+                    response['Content-Disposition'] = 'attachment; filename= "{}.pdf"'.format(c[donation_date_index].date)
+
+                return response
+
 
 
     

@@ -85,6 +85,7 @@ class receives_items_in(models.Model):
     class Meta:
         unique_together = (('receiver','date','category'),)
         db_table = 'receives_items_in'
+<<<<<<< HEAD
 
 
 class file(models.Model):
@@ -92,3 +93,13 @@ class file(models.Model):
     donation_date = models.ForeignKey(donation_drive,on_delete = models.CASCADE)
     class Meta:
         db_table = 'file'
+||||||| 3c3bf57
+=======
+
+class reports(models.Model):
+    donation_drive_date = models.OneToOneField(donation_drive, on_delete = models.CASCADE, null = True)
+    collection_drive_date = models.OneToOneField(collection_drive, on_delete = models.CASCADE, null = True)
+    filepath = models.FileField(upload_to='files/', null=False, default="")
+    class Meta:
+        db_table = 'reports'
+>>>>>>> upstream/master

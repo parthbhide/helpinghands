@@ -23,22 +23,86 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 <link rel="stylesheet" href="{% static 'css/receiverloginscreen.css' %}">
-<script>
-function minus(id)
-{
-	var val = parseInt(document.getElementById(id).value);
-	if (val >0)
-		val -=1;
-	document.getElementById(id).value = val;
+<style>
+    .modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
-function plus(id)
-{
-	var val = parseInt(document.getElementById(id).value);
-	if (val<10)
-		val +=1;
-	document.getElementById(id).value = val;
+
+.popup-modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: #5cb85c; /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  -webkit-animation-name: fadeIn; /* Fade in the background */
+  -webkit-animation-duration: 0.4s;
+  animation-name: fadeIn;
+  animation-duration: 0.4s
 }
-</script>
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin-top: 5%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: auto;;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@-webkit-keyframes slideIn {
+  from {bottom: -300px; opacity: 0} 
+  to {bottom: 0; opacity: 1}
+}
+
+@keyframes slideIn {
+  from {bottom: -300px; opacity: 0}
+  to {bottom: 0; opacity: 1}
+}
+
+@-webkit-keyframes fadeIn {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+
+</style>
 </head>
 <body>
  <!-- header-start -->
@@ -186,36 +250,132 @@ function plus(id)
 
            <div class="container-fluid" >
                 <div style="margin: 10px; float: left;">
-                    <form id= "donation_report" method= "POST" action= "{% url 'demo' %}">
-                        {% csrf_token %}
-                        <div class="form-radio">
+
+                     <button id="donationreport" class="btn btn-update" style=" margin: 10px;">Genrate report for donation drive</button>
+
+                     <div id="donationModal" class="modal">
+
+                      <!-- Modal content -->
+                      <div class="modal-content">
+                        <span class="close">&times;</span>
+                            <div class="container-fluid">
+                                <form id= "donation_report" method= "POST" action= "{% url 'demo' %}">
+                                    {% csrf_token %}
+                                    <div class="form-radio">
                                          {% for key,value in donation_dates.items %}
                                            <input type="radio" name="donation_date" value="{{ key }}" id="d{{ key }}" />
-                                           <label for="d{{ key }}"> {{ value.date }} </label>
+                                           <label for="d{{ key }}" style="margin: 0.5%;"> {{ value.date }} </label>
                                           {% endfor %}        
-                                      </div>     
-                        <button type="submit" id="btnSearch" class="btn btn-update" style=" margin: 10px;" OnClick="btnSearch_Click">Genrate report for donation drive</button>
-                    </form>
+                                    </div>     
+                                    <button type="submit" id="donationsubmit" class="btn btn-update" style=" margin: 10px;" >Genrate Report</button>
+                                </form>
+                            </div>
+                      </div>
+                    </div>
+                    {% if NoDonationDrive %}
+                            <script>alert("Unable to genrate report for the selected date. No Donation Drive occured on the selected Date !");</script>
+                    {% endif %}
+                    {% if NoReceiver %}
+                        <script>alert("Unable to genrate report for the selected date. No Receiver registered for the selected date !");</script>
+                    {% endif %}
                 </div>
  
                 <div style="margin: 10px; float: right;">
-                    <form id= "collection_report" method= "POST" action= "{% url 'demo' %}">
-                        {% csrf_token %}
-                        <div class="form-radio">
-                            {% for key,value in collection_dates.items %}
-                               <input type="radio" name="collection_date" value="{{ key }}" id="c{{ key }}" />
-                               <label for="c{{ key }}"> {{ value.date }} </label>
-                            {% endfor %}
-                                 
-                          </div> 
-                        <button type = "submit" id="btnClear" class="btn btn-update" style=" margin: 10px;" OnClick="btnClear_Click">Genrate report for collection drive</button>
-                    </form>
+
+                    <button type = "submit" id="collectionreport" class="btn btn-update" style=" margin: 10px;" OnClick="btnClear_Click">Genrate report for collection drive</button>
+
+                    <div id="collectionModal" class="modal">
+
+                      <!-- Modal content -->
+                      <div class="modal-content">
+                        <span class="close">&times;</span>
+                            <div class="container-fluid">
+                                <form id= "collection_report" method= "POST" action= "{% url 'demo' %}">
+                                    {% csrf_token %}
+                                    <div class="form-radio">
+                                        {% for key,value in collection_dates.items %}
+                                           <input type="radio" name="collection_date" value="{{ key }}" id="c{{ key }}" />
+                                           <label for="c{{ key }}" style="margin: 0.5%;"> {{ value.date }} </label>
+                                        {% endfor %}
+                                    </div> 
+                                    <button type = "submit" id="collectionsubmit" class="btn btn-update" style=" margin: 10px;" >Genrate report</button>
+                                </form> 
+                            </div>
+                      </div>
+                        {% if NoCollectionDrive %}
+                            <script>alert("Unable to genrate report for the selected date. No Collection Drive occured on the selected Date !");</script>
+                        {% endif %}
+                        {% if NoDonor %}
+                            <script>alert("Unable to genrate report for the selected date. No Donor registered for the selected date !");</script>
+                        {% endif %}
+                    </div>
+
                 </div>
          </div>
      </div>
 </div>
 </form>
 </div>
+
+<script>
+    // Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn1 = document.getElementById("donationreport");
+
+var btn2 = document.getElementById("collectionreport");
+
+// Get the <span> element that closes the modal
+var span1 = document.getElementsByClassName("close")[0];
+
+var span2 = document.getElementsByClassName("close")[1];
+
+var span3 = document.getElementsByClassName("close")[2];
+
+var donationsubmit = document.getElementById("donationsubmit");
+
+var collectionsubmit = document.getElementById("collectionsubmit");
+
+// When the user clicks the button, open the modal 
+btn1.onclick = function() {
+  donationModal.style.display = "block";
+}
+
+btn2.onclick = function() {
+  collectionModal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span1.onclick = function() {
+        donationModal.style.display = "none";
+}
+
+span2.onclick = function() {
+        collectionModal.style.display = "none";
+}
+
+donationsubmit.onclick = function() {
+        donationModal.style.display = "none";
+
+}
+
+collectionsubmit.onclick = function() {
+        collectionModal.style.display = "none";
+
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == donationModal) {
+    donationModal.style.display = "none";
+  }
+  if (event.target == collectionModal) {
+    collectionModal.style.display = "none";
+  }
+}
+
+</script>
 
 
  <script src="{% static 'js/vendor/modernizr-3.5.0.min.js' %}"></script>

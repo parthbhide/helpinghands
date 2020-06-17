@@ -24,18 +24,15 @@ from io import BytesIO
 from io import StringIO
 from django.http import HttpResponse
 from django.template.loader import get_template
-<<<<<<< HEAD
-
-||||||| 3c3bf57
-from xhtml2pdf import pisa
-from fpdf import FPDF
-import pdfkit
-=======
-from xhtml2pdf import pisa
-from fpdf import FPDF
-import pdfkit
 from helpinghands.settings import MEDIA_ROOT
->>>>>>> upstream/master
+from django.core.mail import send_mail
+from django.core.mail import EmailMessage
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from main.token import account_activation_token
+from django.contrib.sites.shortcuts import get_current_site
+
+
 
 
 User = get_user_model()
@@ -53,6 +50,25 @@ def aboutus(request):
 def demo(request):
     return render(request, 'admin.html')
 
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(username=uid)
+        print(type(uid))
+        print(account_activation_token.check_token(user, token))
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        auth.login(request, user)
+        # return redirect('home')
+        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+    else:
+        return HttpResponse('Activation link is INvalid!')
+    
+    
 def user_signup(request):
     if request.method == 'POST':
         if request.POST['password'] == request.POST['cnf-password']:
@@ -70,7 +86,23 @@ def user_signup(request):
                                                 first_name = request.POST['firstname'], last_name=request.POST['lastname'], 
                                                 address =  request.POST['address'], email = request.POST['email'],
                                                 contact_number = request.POST['mobile'],is_donor= donor_check, is_volunteer = volunteer_check)
-                auth.login(request, user)
+                        
+                user.is_active = False
+                #env = Environment(loader=FileSystemLoader('./templates'))
+                #template = env.get_template("acc_activate_email.html")
+                current_site = get_current_site(request)
+                email_subject = 'Activate Your Account'
+              #  message = 'Please click the following link to activate your account' 
+                #to_email = form.cleaned_data.get('email')
+                message = render_to_string('acc_activate_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid':urlsafe_base64_encode(force_bytes(user.username)),
+                'token':account_activation_token.make_token(user),
+            })
+           # to_email = form.cleaned_data.get('email')
+                email = EmailMessage(email_subject, message, to=[request.POST['email']])
+                email.send()
                 return redirect('home')
         else:
             return render(request, 'user-registration.html' , {'error' : 'Passwords must match !!'})
@@ -629,3 +661,8 @@ def adminhome(request):
     
 
     return render (request,'admin.html', {'collection_dates': d, 'donation_dates' : c })
+
+
+
+
+    

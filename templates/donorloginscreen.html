@@ -69,7 +69,7 @@ function plus(id)
                                             </ul>
                                         </li>
                                         {% endif %}
-                                        <li><a href="contact.html">Contact</a></li>
+                                        <li><a href="{% url 'contact' %}">Contact</a></li>
                                         {% if user.is_authenticated %}
                                         <li><a class="active" href="{% url 'donorhome' %}" >Welcome, {{ user.username }}</a></li>
                                         {% endif %}

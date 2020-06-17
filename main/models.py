@@ -39,12 +39,6 @@ class stock(models.Model):
     class Meta:
         db_table = 'stock'
 
-class dstock(models.Model):
-    dcategory =models.ForeignKey(stock,models.CASCADE)
-    dquantity = models.IntegerField()
-    class Meta:
-        db_table = 'dstock'
-
 class donation_drive(models.Model):
     date = models.DateField(primary_key = True)
     class Meta:
@@ -85,16 +79,6 @@ class receives_items_in(models.Model):
     class Meta:
         unique_together = (('receiver','date','category'),)
         db_table = 'receives_items_in'
-<<<<<<< HEAD
-
-
-class file(models.Model):
-    collection_date = models.ForeignKey(collection_drive,on_delete = models.CASCADE)
-    donation_date = models.ForeignKey(donation_drive,on_delete = models.CASCADE)
-    class Meta:
-        db_table = 'file'
-||||||| 3c3bf57
-=======
 
 class reports(models.Model):
     donation_drive_date = models.OneToOneField(donation_drive, on_delete = models.CASCADE, null = True)
@@ -102,4 +86,6 @@ class reports(models.Model):
     filepath = models.FileField(upload_to='files/', null=False, default="")
     class Meta:
         db_table = 'reports'
->>>>>>> upstream/master
+
+
+

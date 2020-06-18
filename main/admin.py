@@ -12,6 +12,7 @@ from .models import receives_items_in
 from .models import User
 from .models import reports
 
+
 # Register your models here.
 admin.site.register(User)
 #admin.site.register(donor)
@@ -25,3 +26,5 @@ admin.site.register(donated_by)
 admin.site.register(donates_items_in)
 admin.site.register(receives_items_in)
 admin.site.register(reports)
+
+

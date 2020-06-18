@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    path('user-signup/', views.user_signup, name = 'u-signup'),
+   path('user-signup/', views.user_signup, name = 'u-signup'),
     path('ngo-signup/', views.ngo_signup, name = 'n-signup'),
     path('aboutus/', views.aboutus, name = 'aboutus'),
     path('login/', views.login, name = 'login'),
@@ -32,5 +32,7 @@ urlpatterns = [
     path('demo/', views.adminhome, name = 'demo'),
     path('contact/', views.contact, name = 'contact'),
     path('volunteerhome/',views.volunteerhome,name='volunteerhome'),
+    path(r'activate/<uidb64>/<token>/',
+        views.activate, name='activate'),
     
 ]+ static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)

@@ -31,13 +31,14 @@ class volunteer(models.Model):
     class Meta:
         db_table = 'volunteer'
 '''
+    
 
 class stock(models.Model):
     category = models.CharField(max_length = 20, primary_key = True)
     quantity = models.IntegerField()
     class Meta:
         db_table = 'stock'
-        
+
 class donation_drive(models.Model):
     date = models.DateField(primary_key = True)
     class Meta:
@@ -85,3 +86,6 @@ class reports(models.Model):
     filepath = models.FileField(upload_to='files/', null=False, default="")
     class Meta:
         db_table = 'reports'
+
+
+

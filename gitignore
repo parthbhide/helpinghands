@@ -1,0 +1,5 @@
+*.pdf
+*.pyc
+main/__pycache__/
+helpinghands/__pycache__/
+main/migrations/

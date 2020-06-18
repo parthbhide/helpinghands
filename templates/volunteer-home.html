@@ -108,16 +108,21 @@
            <tr>
              <th scope="col" colspan="2" style="text-align: center;">Registrations for Donation Drive</th>
              <th scope="col" colspan="2" style="text-align: center;">Registrations for Collection Drive</th>
+<!--              <th scope="col">Name</th>
+             <th scope="col">Date</th>
+             <th scope="col">Category</th>
+             <th scope="col">Quantity</th>
+             <th scope="col">Description</th> -->
            </tr>
            <tr>
              <th scope="col" style="text-align: center;"> Drive Date</th>
-             <th scope="col" style="text-align: center;"> Total Donor Registrations</th>
-             <th scope="col" style="text-align: center;"> Drive Date</th>
              <th scope="col" style="text-align: center;"> Total Receiver Registrations</th>
+             <th scope="col" style="text-align: center;"> Drive Date</th>
+             <th scope="col" style="text-align: center;"> Total Donor Registrations</th>
            </tr>
          </thead>   
          <tbody>
-              {% for key,value in donor_detail.items %}
+             {% for key,value in donor_detail.items %}
            <tr>
              <td style="text-align: center;">{{ key.date }}</td>
              <td style="text-align: center;">{{ value }}</td>
@@ -128,8 +133,68 @@
 
      </div>
      <br><br>
-    
-       
+     <div style="margin-top: 2%;" class="container-fluid">
+         <div style="padding-left: 2%;">
+              <form id= "donation" method= "POST" action= "{% url 'volunteerhome' %}">
+                 {% csrf_token %}
+                      <h4 style="color:Red;text-align:center">
+                      {% if d_flag %}
+                        <!-- linebreakser is used to convert all \n  passed in python script to line breaks --> 
+                        {{ d_e|linebreaksbr }}
+                       
+                        {% endif %}
+                    </h4>
+                    <br>
+                  <div class="layout-inline row ">
+                      <div class="col-sm-6 col-pro layout-inline align-center ">
+                         <h3><p>Choose a date for donation :</p></h3>
+                      </div>
+                       
+                      <div class="form-radio">
+                         {% for key,value in donation_dates.items %}
+                           <input type="radio" name="donation_date" value="{{ key }}" id="d{{ key }}" />
+                           <label for="d{{ key }}"> {{ value.date }} </label>
+                          {% endfor %}        
+                      </div>        
+                  </div>    
+                  {% if d_flag %}
+                     <input type="submit" class="btn btn-update align-left" value="Register for Donationdrive !" disabled></a>
+                  {% else %}
+                     <input type="submit" class="btn btn-update align-left" value="Register for Donationdrive !" ></a>
+                  {% endif %}
+              </form>
+        </div>
+        <div style="padding-left: 2%; margin-top: 5%;">
+          <form id= "collection" method= "POST" action= "{% url 'volunteerhome' %}">
+            {% csrf_token %}
+            <h4 style="color:Red;text-align:center">
+            {% if c_flag %}
+              <!-- linebreakser is used to convert all \n  passed in python script to line breaks --> 
+              {{ c_e|linebreaksbr }}
+
+              {% endif %}
+            </h4>
+            <br>
+            <div class="layout-inline row ">
+              <div class="col-sm-6 col-pro layout-inline align-center ">
+                   <h3><p>Choose a date for collection :</p></h3>
+              </div>
+              <div class="form-radio">
+                {% for key,value in collection_dates.items %}
+                   <input type="radio" name="collection_date" value="{{ key }}" id="c{{ key }}" />
+                   <label for="c{{ key }}"> {{ value.date }} </label>
+                {% endfor %}
+                     
+              </div>        
+            </div>     
+            {% if c_flag %}
+               <input type="submit" class="btn btn-update align-left" value="Register for Collectiondrive !" disabled></a>
+            {% else %}
+               <input type="submit" class="btn btn-update align-left" value="Register for Collectiondrive !" ></a>
+            {% endif %}
+          </form>
+        </div>
+     </div>
 
           <script src="{% static 'js/vendor/modernizr-3.5.0.min.js' %}"></script>
          <script src="{% static 'js/vendor/jquery-1.12.4.min.js' %}"></script>

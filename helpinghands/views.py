@@ -39,6 +39,27 @@ User = get_user_model()
 
 
 def contact(request):
+    if request.method == 'POST':
+        if request.POST["message"] and request.POST["name"] and request.POST["email"] and request.POST["subject"]:
+            content = request.POST["message"]
+            name = request.POST["name"]
+            email = request.POST["email"]
+            subject = request.POST["subject"]
+
+            email = EmailMessage(
+                subject,
+                content,
+                "admin@helpinghands.in",
+                ['parthbhide391@gmail.com'],
+                headers = {'Reply-To': email }
+            )
+
+            email.send()
+
+            return render(request, 'index.html', {'message' : 'Message Sent !!'})
+
+        else:
+            return render(request, 'index.html', {'error' : 'All fields are required !!'})
     return render(request,'contact.html')
 
 def home(request):
@@ -64,9 +85,9 @@ def activate(request, uidb64, token):
         user.save()
         auth.login(request, user)
         # return redirect('home')
-        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+        return render(request, 'index.html', {'message' : 'Email verified !!'})
     else:
-        return HttpResponse('Activation link is INvalid!')
+        return render(request, 'index.html', {'message' : 'Email verification link is invalid !!'})
     
     
 def user_signup(request):
@@ -85,9 +106,8 @@ def user_signup(request):
                 user = User.objects.create_user(request.POST['username'],password = request.POST['password'],
                                                 first_name = request.POST['firstname'], last_name=request.POST['lastname'], 
                                                 address =  request.POST['address'], email = request.POST['email'],
-                                                contact_number = request.POST['mobile'],is_donor= donor_check, is_volunteer = volunteer_check)
+                                                contact_number = request.POST['mobile'],is_donor= donor_check, is_volunteer = volunteer_check, is_active = False)
                         
-                user.is_active = False
                 #env = Environment(loader=FileSystemLoader('./templates'))
                 #template = env.get_template("acc_activate_email.html")
                 current_site = get_current_site(request)
@@ -103,7 +123,7 @@ def user_signup(request):
            # to_email = form.cleaned_data.get('email')
                 email = EmailMessage(email_subject, message, to=[request.POST['email']])
                 email.send()
-                return redirect('home')
+                return render(request, 'index.html', {'message' : 'Please verify your email address to login to your account !!'})
         else:
             return render(request, 'user-registration.html' , {'error' : 'Passwords must match !!'})
         #user wants to signup
@@ -151,8 +171,18 @@ def login(request):
                 request.session['username'] = user.username
                 return redirect('donorhome')
             if user.is_receiver:
+                request.session['username'] = user.username
                 return redirect('receiverhome')
+            if user.is_staff:
+                request.session['username'] = user.username
+                return redirect('adminhome')
         else:
+            try:
+                u = User.objects.get(username=request.POST['username'])
+                if u and not u.is_active :
+                    return render(request, 'login.html',{'error' : 'Email address not verified !!\nVerify your email address to login to your account !!'})    
+            except:
+                pass
             return render(request, 'login.html',{'error' : 'Worng credentials !!'})    
     else:
         if request.session.has_key('username'):
@@ -221,6 +251,9 @@ def donorhome(request):
                 return render(request, 'donorloginscreen.html' ,{'error' : 'All details are required !! ','dates': c , 'len': range(len(c)), 'flag':flag, 'e':e })
     #if it is a GET request means user has logged in so return the donation home screen
     else:
+        if request.user.is_receiver or request.user.is_volunteer:
+            return render(request, 'index.html', {'message' : 'You are not authorized to go to donors page !!'})
+
         return render(request, 'donorloginscreen.html', {'dates': c , 'len': range(len(c)), 'flag': flag, 'e':e })
     
 @login_required
@@ -270,6 +303,9 @@ def receiverhome(request):
             return render(request, 'receiverloginscreen.html' ,{'error' : 'All details are required !! ','dates': c , 'len': range(len(c)), 'flag':flag, 'e':e, 'cloths' : cloths, 'stationary': stationary, 'footwear': footwear })
             
     else:
+        if request.user.is_donor or request.user.is_volunteer:
+            return render(request, 'index.html', {'message' : 'You are not authorized to go to receivers page !!'})
+
         return render(request, 'receiverloginscreen.html', {'dates': c , 'len': range(len(c)), 'flag': flag, 'e':e, 'cloths' : cloths, 'stationary': stationary, 'footwear': footwear })
 
 
@@ -328,9 +364,20 @@ def volunteerhome(request):
                         curr_user = date_d[j].donor
             p[date_d[i].date] = curr_count
 
+    date_c = receives_items_in.objects.all()
+    q = {}
+    for i in range(len(date_c)):
+        curr_count = 1
+        curr_user = date_c[i].receiver
+        if date_c[i].date not in q.keys():
+            for j in range(i+1,len(date_c)):
+                if curr_user != date_c[j].receiver:
+                    if date_c[i].date == date_c[j].date:
+                        curr_count += 1
+                        curr_user = date_c[j].donor
+            q[date_c[i].date] = curr_count
 
-    print(p)
-                
+          
             
                    
     
@@ -354,7 +401,10 @@ def volunteerhome(request):
         
     
     else:
-        return render(request,'volunteer-home.html',{'collection_dates': d , 'donation_dates' : c, 'c_flag': c_flag, 'c_e':c_e,'d_flag': d_flag, 'd_e':d_e, 'donor_detail' : p, 'dis_flag' : dis_flag})
+        if request.user.is_receiver or request.user.is_donor:
+            return render(request, 'index.html', {'message' : 'You are not authorized to go to volunteers page !!'})
+
+        return render(request,'volunteer-home.html',{'collection_dates': d , 'donation_dates' : c, 'c_flag': c_flag, 'c_e':c_e,'d_flag': d_flag, 'd_e':d_e, 'donor_detail' : p, 'receiver_detail': q, 'dis_flag' : dis_flag})
 
 
 def adminhome(request):
@@ -373,53 +423,8 @@ def adminhome(request):
         c[j] = q
         j +=1
 
-
-    # columns=["Date","Donor","Address","Item","Qty"]
-    # df = pd.DataFrame(columns=columns, dtype=float)
-    # details = donates_items_in.objects.all()
-    # for _ in details:
-    #     dic = {}
-    #     dic["Date"]     = _.date.date
-    #     dic["Donor"]    = str(_.donor.first_name) +" "+ str(_.donor.last_name)
-    #     dic["Address"]  =  _.donor.address
-    #     dic["Item"]     = _.category.category
-    #     dic["Quantity"]      = int(_.quantity)
-    #     dic["Contact"]  = str(_.donor.contact_number)
-
-    #     df = df.append(dic, ignore_index= True)
-
-    # donation_drive_report = pd.pivot_table(df, index=["Donor","Address","Contact", "Item"], values=["Quantity"])
-
-    # donation_drive_report = donation_drive_report.reset_index()
-
-    # donation_drive_report.index += 1
-
-    # print(type(donation_drive_report))
-
     env = Environment(loader=FileSystemLoader('./templates'))
     template = env.get_template("myreport.html")
-
-
-
-    # template_vars = {"title" : "Donation Drive Report",
-    #              "national_pivot_table": donation_drive_report.to_html(), "date": date.today()}
-
-    # html_out = template.render(template_vars)
-
-    # HTML(string=html_out).write_pdf(MEDIA_ROOT + "reports/mypdf.pdf")
-
-
-    # new_report = reports()
-
-    # new_report.donation_drive_date = donation_drive.objects.last()
-    # new_report.filepath =  'reports/mypdf.pdf'
-    # new_report.save()
-
-    # f_ob = reports.objects.last()
-    # f = str(f_ob.filepath)
-
-    # print(f)
-
 
     if request.method == "POST":
         #To genrate collection drive reports

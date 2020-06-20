@@ -60,7 +60,13 @@
                                         {% endif %}
                                         <li><a href="{% url 'contact' %}">Contact</a></li>
                                         {% if user.is_authenticated %}
-                                        <li><a href="{% url 'donorhome' %}" >Welcome, {{ user.username }}</a></li>
+                                            {% if user.is_staff %}
+                                                <li><a href="{% url 'adminhome' %}" >Welcome, {{ user.username }}</a></li>
+                                            {% elif user.is_donor %}
+                                                <li><a href="{% url 'donorhome' %}" >Welcome, {{ user.username }}</a></li>
+                                            {% else %}
+                                                <li><a href="{% url 'receiverhome' %}" >Welcome, {{ user.username }}</a></li>
+                                            {% endif %}
                                         {% endif %}
                                     </ul>
                                 </nav>
@@ -113,42 +119,42 @@
 
                     <div class="form-textbox">
                         <label for="name">User Name</label>
-                        <input type="text" name="username" id="name" />
+                        <input type="text" name="username" id="name" pattern="[A-Za-z]{5,12}" title="Length must be between 5 to 12 and should contain characters in uppercase or lowercase or both" required/>
                     </div>
 					
 					<div class="form-textbox">
                         <label for="name">First Name</label>
-                        <input type="text" name="firstname" id="name" />
+                        <input type="text" name="firstname" id="name" pattern="[A-Za-z]{3,}" required/>
                     </div>
 					
 					<div class="form-textbox">
                         <label for="name">Last Name</label>
-                        <input type="text" name="lastname" id="name" />
+                        <input type="text" name="lastname" id="name" pattern="[A-Za-z]{3,}" required/>
                     </div>
 					
 					<div class="form-textbox">
                         <label for="name">Address</label>
-                        <input type="text" name="address" id="name" />
+                        <input type="text" name="address" id="name" required/>
                     </div>
 
                     <div class="form-textbox">
                         <label for="email">Email</label>
-                        <input type="email" name="email" id="email" />
+                        <input type="email" name="email" id="email" required/>
                     </div>
 
                     <div class="form-textbox">
                         <label for="email">Mobile<br>Number</label>
-                        <input type="text" name="mobile" id="email" pattern="[7-9]{1}[0-9]{9}"/>
+                        <input type="text" name="mobile" id="email" pattern="[7-9]{1}[0-9]{9}" required/>
                     </div>
                     
                     <div class="form-textbox">
                         <label for="pass">Password</label>
-                        <input type="password" name="password" id="pass" />
+                        <input type="password" name="password" id="pass" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required/>
                     </div>
 					
 					<div class="form-textbox">
                         <label for="pass">Confirm<br>Password</label>
-                        <input type="password" name="cnf-password" id="pass" />
+                        <input type="password" name="cnf-password" id="pass" required/>
                     </div>
 
                     <div class="form-textbox">

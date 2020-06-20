@@ -60,7 +60,13 @@
                                         {% endif %}
                                         <li><a href="{% url 'contact' %}">Contact</a></li>
                                         {% if user.is_authenticated %}
-                                        <li><a href="{% url 'donorhome' %}" >Welcome, {{ user.username }}</a></li>
+                                            {% if user.is_staff %}
+                                                <li><a href="{% url 'adminhome' %}" >Welcome, {{ user.username }}</a></li>
+                                            {% elif user.is_donor %}
+                                                <li><a href="{% url 'donorhome' %}" >Welcome, {{ user.username }}</a></li>
+                                            {% else %}
+                                                <li><a href="{% url 'receiverhome' %}" >Welcome, {{ user.username }}</a></li>
+                                            {% endif %}
                                         {% endif %}
                                     </ul>
                                 </nav>
@@ -97,7 +103,7 @@
 					{% csrf_token %}
 					<h4 style="color:Red;text-align:center">
     					{% if error %}
-                        {{ error }}
+                        {{ error|linebreaksbr }}
                         <br/>
                         <br/>
                         {% endif %}

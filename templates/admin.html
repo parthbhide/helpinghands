@@ -135,7 +135,13 @@
                                         {% endif %}
                                         <li><a href="{% url 'contact' %}">Contact</a></li>
                                         {% if user.is_authenticated %}
-                                        <li><a class="active" href="{% url 'donorhome' %}" >Welcome, {{ user.username }}</a></li>
+                                            {% if user.is_staff %}
+                                                <li><a href="{% url 'adminhome' %}" >Welcome, {{ user.username }}</a></li>
+                                            {% elif user.is_donor %}
+                                                <li><a href="{% url 'donorhome' %}" >Welcome, {{ user.username }}</a></li>
+                                            {% else %}
+                                                <li><a href="{% url 'receiverhome' %}" >Welcome, {{ user.username }}</a></li>
+                                            {% endif %}
                                         {% endif %}
                                     </ul>
                                 </nav>
@@ -183,7 +189,7 @@
                                                                     <strong>enter 5 in the updated quantity field for stationary.</strong> </li>
                 </h4></ul>
         </div>
-<form id= "donation" method= "POST" action= "{% url 'donorhome' %}">
+<form id= "donation" method= "POST" action= "{% url 'adminhome' %}">
 {% csrf_token %}
 <div class="table">     
       <div class="layout-inline row th">
@@ -259,7 +265,7 @@
                       <div class="modal-content">
                         <span class="close">&times;</span>
                             <div class="container-fluid">
-                                <form id= "donation_report" method= "POST" action= "{% url 'demo' %}">
+                                <form id= "donation_report" method= "POST" action= "{% url 'adminhome' %}">
                                     {% csrf_token %}
                                     <div class="form-radio">
                                          {% for key,value in donation_dates.items %}
@@ -290,7 +296,7 @@
                       <div class="modal-content">
                         <span class="close">&times;</span>
                             <div class="container-fluid">
-                                <form id= "collection_report" method= "POST" action= "{% url 'demo' %}">
+                                <form id= "collection_report" method= "POST" action= "{% url 'adminhome' %}">
                                     {% csrf_token %}
                                     <div class="form-radio">
                                         {% for key,value in collection_dates.items %}

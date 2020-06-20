@@ -55,7 +55,13 @@
                                              {% endif %}
                                              <li><a href="contact.html">Contact</a></li>
                                              {% if user.is_authenticated %}
-                                             <li><a class="active" href="{% url 'donorhome' %}" >Welcome, {{ user.username }}</a></li>
+                                                {% if user.is_staff %}
+                                                    <li><a href="{% url 'adminhome' %}" >Welcome, {{ user.username }}</a></li>
+                                                {% elif user.is_donor %}
+                                                    <li><a href="{% url 'donorhome' %}" >Welcome, {{ user.username }}</a></li>
+                                                {% else %}
+                                                    <li><a href="{% url 'receiverhome' %}" >Welcome, {{ user.username }}</a></li>
+                                                {% endif %}
                                              {% endif %}
                                          </ul>
                                      </nav>
@@ -102,36 +108,50 @@
                         <li><span class="badge badge-info">*</span> As Volunteer you will be reponsible for all the items to be delivered and same for collecting.</li>
                 </h4></ul>
         </div>
-                <div class="table-wrapper-scroll-y my-custom-scrollbar">
-       <table class="table table-bordered table-striped mb-0">
-         <thead>
-           <tr>
-             <th scope="col" colspan="2" style="text-align: center;">Registrations for Donation Drive</th>
-             <th scope="col" colspan="2" style="text-align: center;">Registrations for Collection Drive</th>
-<!--              <th scope="col">Name</th>
-             <th scope="col">Date</th>
-             <th scope="col">Category</th>
-             <th scope="col">Quantity</th>
-             <th scope="col">Description</th> -->
-           </tr>
-           <tr>
-             <th scope="col" style="text-align: center;"> Drive Date</th>
-             <th scope="col" style="text-align: center;"> Total Receiver Registrations</th>
-             <th scope="col" style="text-align: center;"> Drive Date</th>
-             <th scope="col" style="text-align: center;"> Total Donor Registrations</th>
-           </tr>
-         </thead>   
-         <tbody>
-             {% for key,value in donor_detail.items %}
-           <tr>
-             <td style="text-align: center;">{{ key.date }}</td>
-             <td style="text-align: center;">{{ value }}</td>
-           </tr>
-            {% endfor %}
-         </tbody>
-       </table>
-
-     </div>
+        <div class="container-fluid" style="display: inline-flex; border: ridge; ">
+             <div class="table-wrapper-scroll-y my-custom-scrollbar" style="width: 50%; border-right: ridge; height: 18em; overflow: auto;">
+                <table class="table table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col" colspan="2" style="text-align: center;">Registrations for Donation Drive</th>
+                        </tr>
+                        <tr>
+                            <th scope="col" style="text-align: center;"> Drive Date</th>
+                            <th scope="col" style="text-align: center;"> Total Receiver Registrations</th>
+                        </tr>
+                    </thead>   
+                    <tbody>
+                        {% for key,value in receiver_detail.items %}
+                            <tr>
+                                <td style="text-align: center;">{{ key.date }}</td>
+                                <td style="text-align: center;">{{ value }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-wrapper-scroll-y my-custom-scrollbar" style="width: 50%; border-left: ridge; height: 18em; overflow: auto;">
+                <table class="table table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col" colspan="2" style="text-align: center;">Registrations for Collection Drive</th>
+                        </tr>
+                        <tr>
+                            <th scope="col" style="text-align: center;"> Drive Date</th>
+                            <th scope="col" style="text-align: center;"> Total Donor Registrations</th>
+                        </tr>
+                    </thead>   
+                    <tbody>
+                        {% for key,value in donor_detail.items %}
+                            <tr>
+                                <td style="text-align: center;">{{ key.date }}</td>
+                                <td style="text-align: center;">{{ value }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>   
+        </div>
      <br><br>
      <div style="margin-top: 2%;" class="container-fluid">
          <div style="padding-left: 2%;">

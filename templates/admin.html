@@ -189,6 +189,8 @@
                                                                     <strong>enter 5 in the updated quantity field for stationary.</strong> </li>
                 </h4></ul>
         </div>
+        {% if DateAlreadyExists %}<script>alert('Drive on this date is already scheduled. Please chose another date !'); </script> {% endif %}
+        {% if NewDateAdded %}<script>alert('New Drive Date added to schedule !'); </script> {% endif %}
 <form id= "donation" method= "POST" action= "{% url 'adminhome' %}">
 {% csrf_token %}
 <div class="table">     
@@ -257,7 +259,7 @@
            <div class="container-fluid" >
                 <div style="margin: 10px; float: left;">
 
-                     <button id="donationreport" class="btn btn-update" style=" margin: 10px;">Genrate report for donation drive</button>
+                     <button id="donationreport" class="btn btn-update" style=" margin: 10px;">Genrate Report for Donation Drive</button>
 
                      <div id="donationModal" class="modal">
 
@@ -288,7 +290,7 @@
  
                 <div style="margin: 10px; float: right;">
 
-                    <button type = "submit" id="collectionreport" class="btn btn-update" style=" margin: 10px;" OnClick="btnClear_Click">Genrate report for collection drive</button>
+                    <button type = "submit" id="collectionreport" class="btn btn-update" style=" margin: 10px;" OnClick="btnClear_Click">Genrate Report for Collection Drive</button>
 
                     <div id="collectionModal" class="modal">
 
@@ -317,10 +319,44 @@
                     </div>
 
                 </div>
+
+                <div style="margin: 10px; float: right;">
+
+                    <button type = "submit" id="newcollectiondrivedate" class="btn btn-update" style=" margin: 10px;" OnClick="btnClear_Click">Add New Collection Drive Date</button>
+
+                </div>
+
+                <div id="addcollectiondate" style="margin: 10px; float: right; display: none;">
+                  <div style="display: inline-flex;">
+                    <form id= "add_collectiondrive_date" method= "POST" action= "{% url 'adminhome' %}">
+                      {% csrf_token %}
+                      <input type="date" style="margin: 10px;" name="collectiondrivedate">
+                      <button type = "submit" id="addcollectiondrivedate" class="btn btn-update" style=" margin: 10px;">Add Date</button>
+                    </form>
+                    <span class="close" style="margin-left: 10px; float: right;">&times;</span>
+                  </div>
+                </div>
+
+                <div style="margin: 10px; float: left;">
+
+                    <button type = "submit" id="newdonationdrivedate" class="btn btn-update" style=" margin: 10px;" OnClick="btnClear_Click">Add New Donation Drive Date</button>
+
+                </div>
+
+                <div id="adddonationdate" style="margin: 10px; float: left; display: none;">
+                  <div style="display: inline-flex;">
+                    <span class="close" style="margin-right: 10px; float: left;">&times;</span>
+                    <form id= "add_donationdrive_date" method= "POST" action= "{% url 'adminhome' %}">
+                      {% csrf_token %}
+                      <button type = "submit" id="adddonationdrivedate" class="btn btn-update" style=" margin: 10px;" OnClick="btnClear_Click">Add Date</button>
+                      <input type="date" style="margin: 10px;" name="donationdrivedate">
+                    </form>
+                  </div>
+                </div>
+
          </div>
      </div>
 </div>
-</form>
 </div>
 
 <script>
@@ -332,12 +368,18 @@ var btn1 = document.getElementById("donationreport");
 
 var btn2 = document.getElementById("collectionreport");
 
+var btn3 = document.getElementById("newcollectiondrivedate");
+
+var btn4 = document.getElementById("newdonationdrivedate");
+
 // Get the <span> element that closes the modal
 var span1 = document.getElementsByClassName("close")[0];
 
 var span2 = document.getElementsByClassName("close")[1];
 
 var span3 = document.getElementsByClassName("close")[2];
+
+var span4 = document.getElementsByClassName("close")[3];
 
 var donationsubmit = document.getElementById("donationsubmit");
 
@@ -352,6 +394,24 @@ btn2.onclick = function() {
   collectionModal.style.display = "block";
 }
 
+btn2.onclick = function() {
+  collectionModal.style.display = "block";
+}
+
+btn3.onclick = function() {
+  addcollectiondate.style.display = "block";
+
+  if(adddonationdate.style.display == "block")
+    adddonationdate.style.display = "none";
+}
+
+btn4.onclick = function() {
+  adddonationdate.style.display = "block";
+  if(addcollectiondate.style.display == "block")
+    addcollectiondate.style.display = "none";
+}
+
+
 // When the user clicks on <span> (x), close the modal
 span1.onclick = function() {
         donationModal.style.display = "none";
@@ -359,6 +419,14 @@ span1.onclick = function() {
 
 span2.onclick = function() {
         collectionModal.style.display = "none";
+}
+
+span3.onclick = function() {
+        addcollectiondate.style.display = "none";
+}
+
+span4.onclick = function() {
+        adddonationdate.style.display = "none";
 }
 
 donationsubmit.onclick = function() {

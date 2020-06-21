@@ -201,7 +201,7 @@ def logout(request):
     
     return render(request, 'login.html')
         
-@login_required
+@login_required(login_url='/login/')
 def donorhome(request):
     dates = collection_drive.objects.all()
     _details = donates_items_in.objects.all()
@@ -256,7 +256,7 @@ def donorhome(request):
 
         return render(request, 'donorloginscreen.html', {'dates': c , 'len': range(len(c)), 'flag': flag, 'e':e })
     
-@login_required
+@login_required(login_url='/login/')
 def receiverhome(request):
     dates = donation_drive.objects.all()
     curr_stock = stock.objects.all()
@@ -309,7 +309,7 @@ def receiverhome(request):
         return render(request, 'receiverloginscreen.html', {'dates': c , 'len': range(len(c)), 'flag': flag, 'e':e, 'cloths' : cloths, 'stationary': stationary, 'footwear': footwear })
 
 
-@login_required
+@login_required(login_url='/login/')
 def volunteerhome(request):
     collect = collection_drive.objects.all()
     donate = donation_drive.objects.all()
@@ -406,7 +406,7 @@ def volunteerhome(request):
 
         return render(request,'volunteer-home.html',{'collection_dates': d , 'donation_dates' : c, 'c_flag': c_flag, 'c_e':c_e,'d_flag': d_flag, 'd_e':d_e, 'donor_detail' : p, 'receiver_detail': q, 'dis_flag' : dis_flag})
 
-
+@login_required(login_url='/login/')
 def adminhome(request):
     collect = collection_drive.objects.all()
     d = {}
@@ -427,8 +427,40 @@ def adminhome(request):
     template = env.get_template("myreport.html")
 
     if request.method == "POST":
+        if request.POST.get('collectiondrivedate',False):
+            new_date = datetime.strptime(request.POST.get('collectiondrivedate'), '%Y-%m-%d')
+
+            try:
+                get_date = collection_drive.objects.get(date=new_date)
+            except collection_drive.DoesNotExist:
+                get_date = None
+
+            if get_date is not None:
+                return render (request,'admin.html', {'collection_dates': d, 'donation_dates' : c, 'DateAlreadyExists': True})
+            else:
+                collection_drive_ob = collection_drive()
+                collection_drive_ob.date = new_date
+                collection_drive_ob.save()
+                return render (request,'admin.html', {'collection_dates': d, 'donation_dates' : c, 'NewDateAdded': True })
+
+        elif request.POST.get('donationdrivedate',False):
+            new_date = datetime.strptime(request.POST.get('donationdrivedate'),'%Y-%m-%d')
+
+            try:
+                get_date = donation_drive.objects.get(date=new_date)
+            except donation_drive.DoesNotExist:
+                get_date = None
+
+            if get_date is not None:
+                return render (request,'admin.html', {'collection_dates': d, 'donation_dates' : c, 'DateAlreadyExists': True})
+            else:
+                donation_drive_ob = donation_drive()
+                donation_drive_ob.date = new_date
+                donation_drive_ob.save()
+                return render (request,'admin.html', {'collection_dates': d, 'donation_dates' : c, 'NewDateAdded': True })
+
         #To genrate collection drive reports
-        if request.POST.get('collection_date',False):
+        elif request.POST.get('collection_date',False):
             collection_date_index = int(request.POST.get('collection_date',False))
 
             #if collection drive date has occured, we dont need to genrate report , just display report by fetching from database

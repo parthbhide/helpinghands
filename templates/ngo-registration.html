@@ -43,7 +43,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="col-xl-7 col-lg-7">
+                        <div class="col-md-6 col-md-6">
                             <div class="main-menu  d-none d-lg-block">
                                 <nav>
                                     <ul id="navigation">
@@ -68,22 +68,23 @@
                                                 <li><a href="{% url 'receiverhome' %}" >Welcome, {{ user.username }}</a></li>
                                             {% endif %}
                                         {% endif %}
+
+                                        <li>
+                                                <div>
+                                                {% if user.is_authenticated %}
+                                                
+                                                    <a href="javascript:{document.getElementById('logout').submit()}" onclick="">Log Out</a>
+                                                    <form id = "logout" method = "POST" action= "{% url 'logout' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" />
+                                                    </form>
+                                                {% else %}
+                                                    <a href="{% url 'login' %}" >Login</a>
+                                                {% endif %}
+                                                </div>
+                                        </li>
                                     </ul>
                                 </nav>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-3 d-none d-lg-block">
-                            <div class="donate_now">
-                                {% if user.is_authenticated %}
-                            
-                                <a href="javascript:{document.getElementById('logout').submit()}" class="boxed-btn" onclick="">Log Out</a>
-                                <form id = "logout" method = "POST" action= "{% url 'logout' %}">
-                                {% csrf_token %}
-                                <input type="hidden" />
-                                </form>
-                            {% else %}
-                                <a href="{% url 'login' %}" class="boxed-btn">Login</a>
-                            {% endif %}
                             </div>
                         </div>
                         <div class="col-12">
@@ -113,52 +114,52 @@
                         {% endif %}
                     </h4>
                     <h2 class="form-title">NGO Registration</h2>
-                    <div class="form-radio" style="padding-left:130px">
+                    <div class="form-radio" style="text-align: center;">
                         <input type="radio" name="user_type" value="is_ngo" id="receiver" checked="checked" />
                         <label for="donor">NGO</label>
                     </div>
                     
-                    <div class="form-textbox">
+                    <div class="form-textbox" style="margin:3.5px;">
                         <label for="regnum">Registration<br>Number</label>
                         <input type="text" name="reg_number" id="regnum" pattern="[0-9]+" required/>                
                     </div>
 
-                    <div class="form-textbox">
+                    <div class="form-textbox" style="margin:3.5px;">
                         <label for="uname">User Name</label>
                         <input type="text" name="username" id="uname" pattern="[A-Za-z]{5,12}" title="Length must be between 5 to 12 and should contain characters in uppercase or lowercase or both" required/>
                     </div>
 					
-					<div class="form-textbox">
+					<div class="form-textbox" style="margin:3.5px;">
                         <label for="ngoname">NGO Name</label>
                         <input type="text" name="ngo-name" id="ngoname" required/>
                     </div>
                     
-					<div class="form-textbox">
+					<div class="form-textbox" style="margin:3.5px;">
                         <label for="add">Address</label>
                         <input type="text" name="address" id="add" required/>
                     </div>
 
-                    <div class="form-textbox">
+                    <div class="form-textbox" style="margin:3.5px;">
                         <label for="email">Email</label>
                         <input type="email" name="email" id="email" required/>
                     </div>
 
-                    <div class="form-textbox">
+                    <div class="form-textbox" style="margin:3.5px;">
                         <label for="mob">Mobile<br>Number</label>
                         <input type="text" name="mobile" id="mob" pattern="[7-9]{1}[0-9]{9}" required/>
                     </div>
                     
-                    <div class="form-textbox">
+                    <div class="form-textbox" style="margin:3.5px;">
                         <label for="pass">Password</label>
                         <input type="password" name="password" id="pass" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required/>
                     </div>
 					
-					<div class="form-textbox">
+					<div class="form-textbox" style="margin:3.5px;">
                         <label for="pass">Confirm<br>Password</label>
                         <input type="password" name="cnf-password" id="pass" required/>
                     </div>
 
-                    <div class="form-textbox">
+                    <div class="form-textbox" style="margin:3.5px;">
                         <input type="submit" name="submit" id="submit" class="submit" value="Create account" />
                     </div>
                 </form>

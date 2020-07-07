@@ -1,5 +1,6 @@
 <html>
 <head>
+<title> Welcome {{ user.username }} | Receiver Home</title>
 <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 {% load static %}
@@ -43,7 +44,7 @@ function plus(id)
 <body>
  <!-- header-start -->
     <header>
-        <div class="header-area " style=" background:#444;opacity:0.56">
+        <div class="header-area " style=" background:#444;opacity:0.56; height: 10%;">
             <div id="sticky-header" class="main-header-area">
                 <div class="container-fluid p-0">
                     <div class="row align-items-center justify-content-between no-gutters">
@@ -54,7 +55,7 @@ function plus(id)
                                 </a>
                             </div>
                         </div>
-                        <div class="col-xl-7 col-lg-7">
+                        <div class="col-md-6 col-md-6">
                             <div class="main-menu  d-none d-lg-block">
                                 <nav>
                                     <ul id="navigation">
@@ -79,22 +80,23 @@ function plus(id)
                                                 <li><a href="{% url 'receiverhome' %}" >Welcome, {{ user.username }}</a></li>
                                             {% endif %}
                                         {% endif %}
+
+                                         <li>
+                                                <div>
+                                                {% if user.is_authenticated %}
+                                                
+                                                    <a href="javascript:{document.getElementById('logout').submit()}" onclick="">Log Out</a>
+                                                    <form id = "logout" method = "POST" action= "{% url 'logout' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" />
+                                                    </form>
+                                                {% else %}
+                                                    <a href="{% url 'login' %}" >Login</a>
+                                                {% endif %}
+                                                </div>
+                                        </li>
                                     </ul>
                                 </nav>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-3 d-none d-lg-block">
-                            <div class="donate_now">
-                            {% if user.is_authenticated %}
-                            
-                                <a href="javascript:{document.getElementById('logout').submit()}" class="boxed-btn" onclick="">Log Out</a>
-                                <form id = "logout" method = "POST" action= "{% url 'logout' %}">
-                                {% csrf_token %}
-                                <input type="hidden" />
-                                </form>
-                            {% else %}
-                                <a href="{% url 'login' %}" class="boxed-btn">Login</a>
-                            {% endif %}
                             </div>
                         </div>
                         <div class="col-12">
@@ -106,6 +108,7 @@ function plus(id)
         </div>
     </header>
     <!-- header-end --> 
+<div class="container-fluid" style="width: 100%;">
     <br><br><br><br><br><br><br><br><br>
         <h4 style="color:Red;text-align:center">
     				{% if error %}
@@ -116,98 +119,98 @@ function plus(id)
         {{ e|linebreaksbr }}
         {% endif %}
         </h4>
-<form id= "donation" method= "POST" action= "{% url 'receiverhome' %}">
-{% csrf_token %}
-<div class="table">     
-      <div class="layout-inline row th">
-        <div class="col col-pro align-center">Item</div>
-        <div class="col col-qty align-center">Available QTY</div>
-        <div class="col col-qty align-center">Required QTY</div>
-        <div class="col align-center">Description</div>
+    <form id= "donation" method= "POST" action= "{% url 'receiverhome' %}">
+    {% csrf_token %}
+    <div class="table">     
+          <div class="layout-inline row th container-fluid">
+            <div class="col col-pro align-center">Item</div>
+            <div class="col col-qty align-center">Available QTY</div>
+            <div class="col col-qty align-center">Required QTY</div>
+            <div class="col align-center">Description</div>
+          </div>
+          <div class="layout-inline row container-fluid">
+            <div class="col col-pro layout-inline align-center">
+              <img class ="image" src="{% static 'img/cloths.png' %}" alt="cloths" />
+              <p>Cloths</p>
+            </div>
+            <div class="col col-qty layout-inline">
+              
+                <input type="numeric"  id="num" value="{{ cloths }}" disabled/>
+              
+            </div>
+            <div class="col col-qty layout-inline">
+              <a class="qty qty-minus" onclick="minus('num1')">-</a>
+                <input type="numeric" name="req-cloths-qty" id="num1" value="0" />
+              <a class="qty qty-minus" onclick="plus('num1')">+</a>
+            </div>
+            <div class="col col-vat col-numeric" style="text-align: center;">
+              <textarea name="cloths-disc" placeholder="Enter a small description here"></textarea>
+            </div>
+          </div>
+          <div class="layout-inline row container-fluid">
+            <div class="col col-pro layout-inline align-center">
+              <img class ="image" src="{% static 'img/footwear.png' %}" alt="footwear" />
+              <p>Footware</p>
+            </div>
+            <div class="col col-qty  layout-inline">
+              
+                <input type="numeric"  id="num1" value="{{ footwear }}" disabled/>
+              
+            </div>
+            <div class="col col-qty  layout-inline">
+              <a class="qty qty-minus" onclick="minus('num2')">-</a>
+                <input type="numeric" name="req-footwear-qty" id="num2" value="0" />
+              <a class="qty qty-minus" onclick="plus('num2')">+</a>
+            </div>
+            <div class="col col-vat col-numeric" style="text-align: center;">
+              <textarea name="footwear-disc" placeholder="Enter a small description here"></textarea>
+            </div>      
+          </div>
+           <div class="layout-inline row container-fluid">
+    		<div class="col col-pro layout-inline align-center">
+              <img class ="image" src="{% static 'img/stationary.png' %}" alt="stationary" />
+              <p>Stationary</p>
+            </div>
+            <div class="col col-qty layout-inline">
+              
+                <input type="numeric"  id="num" value="{{ stationary }}" disabled/>
+              
+            </div>
+            <div class="col col-qty layout-inline align-center">
+              <a class="qty qty-minus" onclick="minus('num3')">-</a>
+                <input type="numeric" name="req-stationary-qty" id="num3" value="0" />
+              <a class="qty qty-minus" onclick="plus('num3')">+</a>
+            </div>
+            <div class="col col-vat col-numeric" style="text-align: center;">
+              <textarea name="stationary-disc" placeholder="Enter a small description here"></textarea>         
+            </div>       
+          </div>
+    	  
+    	  
+    	  <div class="layout-inline container-fluid  " style="margin-top: 2%; text-align: center;">
+    		<div>
+              <h3><p>Choose a date for donation :</p></h3>
+            </div>
+            
+    			<div class="form-radio" style="margin-left: 5%;">
+        			{% for key,value in dates.items %}
+        				<input type="radio" name="date" value="{{ key }}" id="{{ key }}" />
+        				<label for="{{ key }}"> {{ value.date }} </label>
+    				{% endfor %}				
+                </div>        
+          </div>	  
       </div>
-      <div class="layout-inline row">
-        <div class="col col-pro layout-inline align-center">
-          <img class ="image" src="{% static 'img/cloths.png' %}" alt="cloths" />
-          <p>Cloths</p>
-        </div>
-        <div class="col col-qty layout-inline">
-          
-            <input type="numeric"  id="num" value="{{ cloths }}" disabled/>
-          
-        </div>
-        <div class="col col-qty layout-inline">
-          <a class="qty qty-minus" onclick="minus('num1')">-</a>
-            <input type="numeric" name="req-cloths-qty" id="num1" value="0" />
-          <a class="qty qty-minus" onclick="plus('num1')">+</a>
-        </div>
-        <div class="col col-vat col-numeric">
-          <textarea name="cloths-disc" placeholder="Enter a small description here"></textarea>
-        </div>
+      {% if flag %}
+      <div class="container-fluid" style="display: inline-flex; justify-content: center;">
+          <input type="submit" class="btn btn-update align-left" value="Request !" disabled></a>
       </div>
-      <div class="layout-inline row row-bg2">
-        <div class="col col-pro layout-inline align-center">
-          <img class ="image" src="{% static 'img/footwear.png' %}" alt="footwear" />
-          <p>Footware</p>
-        </div>
-        <div class="col col-qty  layout-inline">
-          
-            <input type="numeric"  id="num1" value="{{ footwear }}" disabled/>
-          
-        </div>
-        <div class="col col-qty  layout-inline">
-          <a class="qty qty-minus" onclick="minus('num2')">-</a>
-            <input type="numeric" name="req-footwear-qty" id="num2" value="0" />
-          <a class="qty qty-minus" onclick="plus('num2')">+</a>
-        </div>
-        <div class="col col-vat col-numeric">
-          <textarea name="footwear-disc" placeholder="Enter a small description here"></textarea>
-        </div>      
+      {% else %}
+      <div class="container-fluid" style="display: inline-flex; justify-content: center;">
+          <input type="submit" class="btn btn-update align-left" value="Request !" ></a>
       </div>
-       <div class="layout-inline row ">
-		<div class="col col-pro layout-inline align-center">
-          <img class ="image" src="{% static 'img/stationary.png' %}" alt="stationary" />
-          <p>Stationary</p>
-        </div>
-        <div class="col col-qty layout-inline">
-          
-            <input type="numeric"  id="num" value="{{ stationary }}" disabled/>
-          
-        </div>
-        <div class="col col-qty layout-inline align-center">
-          <a class="qty qty-minus" onclick="minus('num3')">-</a>
-            <input type="numeric" name="req-stationary-qty" id="num3" value="0" />
-          <a class="qty qty-minus" onclick="plus('num3')">+</a>
-        </div>
-        <div class="col col-vat col-numeric">
-          <textarea name="stationary-disc" placeholder="Enter a small description here"></textarea>         
-        </div>       
-      </div>
-	  
-	  
-	  <div class="layout-inline row " style="margin-top: 2%;">
-		<div class="col-sm-6 col-pro layout-inline align-center ">
-          <h3><p>Choose a date for donation :</p></h3>
-        </div>
-        
-			<div class="form-radio">
-    			{% for key,value in dates.items %}
-    				<input type="radio" name="date" value="{{ key }}" id="{{ key }}" />
-    				<label for="{{ key }}"> {{ value.date }} </label>
-				{% endfor %}				
-            </div>        
-      </div>	  
-  </div>
-  {% if flag %}
-  <div class="container-fluid" style="display: inline-flex; justify-content: center;">
-      <input type="submit" class="btn btn-update align-left" value="Request !" disabled></a>
-  </div>
-  {% else %}
-  <div class="container-fluid" style="display: inline-flex; justify-content: center;">
-      <input type="submit" class="btn btn-update align-left" value="Request !" ></a>
-  </div>
-  {% endif %}
-  
-</form>
+      {% endif %}
+      
+    </form>
 </div>
 
 

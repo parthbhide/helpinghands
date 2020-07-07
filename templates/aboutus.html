@@ -27,7 +27,7 @@
 
  <!-- header-start -->
     <header>
-        <div class="header-area " style=" background:#444;opacity:0.56">
+        <div class="header-area " style=" background:#444;opacity:0.56; height: 10%;">
             <div id="sticky-header" class="main-header-area">
                 <div class="container-fluid p-0">
                     <div class="row align-items-center justify-content-between no-gutters">
@@ -38,7 +38,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="col-xl-7 col-lg-7">
+                        <div class="col-md-6 col-md-6">
                             <div class="main-menu  d-none d-lg-block">
                                 <nav>
                                     <ul id="navigation">
@@ -63,22 +63,22 @@
                                                 <li><a href="{% url 'receiverhome' %}" >Welcome, {{ user.username }}</a></li>
                                             {% endif %}
                                         {% endif %}
+                                        <li>
+                                                <div>
+                                                {% if user.is_authenticated %}
+                                                
+                                                    <a href="javascript:{document.getElementById('logout').submit()}" onclick="">Log Out</a>
+                                                    <form id = "logout" method = "POST" action= "{% url 'logout' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" />
+                                                    </form>
+                                                {% else %}
+                                                    <a href="{% url 'login' %}" >Login</a>
+                                                {% endif %}
+                                                </div>
+                                        </li>
                                     </ul>
                                 </nav>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-3 d-none d-lg-block">
-                            <div class="donate_now">
-                                {% if user.is_authenticated %}
-                           
-                                <a href="javascript:{document.getElementById('logout').submit()}" class="boxed-btn" onclick="">Log Out</a>
-                                <form id = "logout" method = "POST" action= "{% url 'logout' %}">
-                                {% csrf_token %}
-                                <input type="hidden" />
-                                </form>
-                            {% else %}
-                                <a href="{% url 'login' %}" class="boxed-btn">Login</a>
-                            {% endif %}
                             </div>
                         </div>
                         <div class="col-12">
@@ -92,12 +92,12 @@
     <!-- header-end -->
     <br><br><br><br>
 <div class="about-section paddingTB60 gray-bg">
-                <div class="container">
+                <div class="container-fluid" style="text-align: center;">
                     <div class="row">
-						<div class="col-md-7 col-sm-6">
-							<div class="about-title clearfix">
+						<div class="container-fluid">
+							<div class="container-fluid about-title">
 								<h1>About <span>Helping Hands</span></h1>
-								<p class="about-paddingB">
+								<p class="container-fluid">
 									 Helping Hands provides you with the most convenient and easy way to donate those items that are just lying at some corner of your house,<br> 
 									 gathering dust and taking up some much-needed space. It's time to donate them and give those books, toys, clothes etc a new life.<br><br>
 								     There are many benefits to donating your old stuff to NGOs.
@@ -111,17 +111,24 @@
 									</ul>
 									<p>... And much more !</p>
 								</p>                  
-								<div class="col-md-5 col-sm-6">
+								<div class="container-fluid">
 									<h3>Keep Spreading Happiness, Stay Happy!!</h3>
-									<div class="about-img">
-										<img src="{% static 'img/aboutimg.jpg' %}" alt="">
-									</div>
 								</div>	
-							</div>
 						</div>
+                        <div class="container-fluid">
+                                        <img id="about-img" src="{% static 'img/aboutimg.jpg' %}" alt="">
+                                    </div>
+                            </div>
                     </div>
                 </div>
 </div>
+<style>
+    #about-img{
+
+        max-width: 100%;
+        height: auto;
+    }
+</style>
 
 <script src="{% static 'js/vendor/modernizr-3.5.0.min.js' %}"></script>
     <script src="{% static 'js/vendor/jquery-1.12.4.min.js' %}"></script>

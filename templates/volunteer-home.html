@@ -27,7 +27,7 @@
      <body>
       <!-- header-start -->
          <header>
-             <div class="header-area " style=" background:#444;opacity:0.56">
+             <div class="header-area " style=" background:#444;opacity:0.56; height:10%; ">
                  <div id="sticky-header" class="main-header-area">
                      <div class="container-fluid p-0">
                          <div class="row align-items-center justify-content-between no-gutters">
@@ -38,7 +38,7 @@
                                      </a>
                                  </div>
                              </div>
-                             <div class="col-xl-7 col-lg-7">
+                             <div class="col-md-6 col-md-6">
                                  <div class="main-menu  d-none d-lg-block">
                                      <nav>
                                          <ul id="navigation">
@@ -63,22 +63,22 @@
                                                     <li><a href="{% url 'receiverhome' %}" >Welcome, {{ user.username }}</a></li>
                                                 {% endif %}
                                              {% endif %}
+                                              <li>
+                                                <div>
+                                                {% if user.is_authenticated %}
+                                                
+                                                    <a href="javascript:{document.getElementById('logout').submit()}" onclick="">Log Out</a>
+                                                    <form id = "logout" method = "POST" action= "{% url 'logout' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" />
+                                                    </form>
+                                                {% else %}
+                                                    <a href="{% url 'login' %}" >Login</a>
+                                                {% endif %}
+                                                </div>
+                                        </li>
                                          </ul>
                                      </nav>
-                                 </div>
-                             </div>
-                             <div class="col-xl-3 col-lg-3 d-none d-lg-block">
-                                 <div class="donate_now">
-                                 {% if user.is_authenticated %}
-                                 
-                                     <a href="javascript:{document.getElementById('logout').submit()}" class="boxed-btn" onclick="">Log Out</a>
-                                     <form id = "logout" method = "POST" action= "{% url 'logout' %}">
-                                     {% csrf_token %}
-                                     <input type="hidden" />
-                                     </form>
-                                 {% else %}
-                                     <a href="{% url 'login' %}" class="boxed-btn">Login</a>
-                                 {% endif %}
                                  </div>
                              </div>
                              <div class="col-12">
@@ -89,6 +89,7 @@
                  </div>
              </div>
          </header>
+         <div class="container-fluid" style="width: 100%;">
          <!-- header-end --> 
          <br><br><br><br><br><br><br><br>
              <h4 style="color:Red;text-align:center">
@@ -98,59 +99,76 @@
              </h4>
              
         <div class="alert alert-info">
-             <h3 style="color:red">Volunteer's Policy :</h3>
-             
-                <ul><h4>
-                        <li><span class="badge badge-info">*</span> You will be not be provided with any of the transport means you are required use your own to serve.</li>
-                        <li><span class="badge badge-info">*</span> On the collecion or donation drive date you should be available from 9am to 6pm.</li>
-                        <li><span class="badge badge-info">*</span> This organization is working as a <strong>NON-PROFIT ORGANIZATION</strong>.</li>
-                        <li><span class="badge badge-info">*</span> This organization is presently working in <strong>BHOPAL</strong> city only.</li>
-                        <li><span class="badge badge-info">*</span> As Volunteer you will be reponsible for all the items to be delivered and same for collecting.</li>
-                </h4></ul>
-        </div>
-        <div class="container-fluid" style="display: inline-flex; border: ridge; ">
-             <div class="table-wrapper-scroll-y my-custom-scrollbar" style="width: 50%; border-right: ridge; height: 18em; overflow: auto;">
-                <table class="table table-bordered table-striped mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col" colspan="2" style="text-align: center;">Registrations for Donation Drive</th>
-                        </tr>
-                        <tr>
-                            <th scope="col" style="text-align: center;"> Drive Date</th>
-                            <th scope="col" style="text-align: center;"> Total Receiver Registrations</th>
-                        </tr>
-                    </thead>   
-                    <tbody>
-                        {% for key,value in receiver_detail.items %}
-                            <tr>
-                                <td style="text-align: center;">{{ key.date }}</td>
-                                <td style="text-align: center;">{{ value }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 style="color:red"><a data-toggle="collapse" href="#collapse1">Volunteer's Policy</a></h4>
+                            <div id="collapse1" class="panel-collapse collapse">
+                                <ul><h5>
+                                        <li><span class="badge badge-info panel-body">*</span> You will be not be provided with any of the transport means you are required use your own to serve.</li>
+                                        <li><span class="badge badge-info panel-body">*</span> On the collecion or donation drive date you should be available from 9am to 6pm.</li>
+                                        <li><span class="badge badge-info panel-body">*</span> This organization is working as a <strong>NON-PROFIT ORGANIZATION</strong>.</li>
+                                        <li><span class="badge badge-info panel-body">*</span> This organization is presently working in <strong>BHOPAL</strong> city only.</li>
+                                        <li><span class="badge badge-info panel-body">*</span> As Volunteer you will be reponsible for all the items to be delivered and same for collecting.</li>
+                                </h5></ul>
+                            </div>
+                    </div>
+                </div>
             </div>
-            <div class="table-wrapper-scroll-y my-custom-scrollbar" style="width: 50%; border-left: ridge; height: 18em; overflow: auto;">
-                <table class="table table-bordered table-striped mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col" colspan="2" style="text-align: center;">Registrations for Collection Drive</th>
-                        </tr>
-                        <tr>
-                            <th scope="col" style="text-align: center;"> Drive Date</th>
-                            <th scope="col" style="text-align: center;"> Total Donor Registrations</th>
-                        </tr>
-                    </thead>   
-                    <tbody>
-                        {% for key,value in donor_detail.items %}
-                            <tr>
-                                <td style="text-align: center;">{{ key.date }}</td>
-                                <td style="text-align: center;">{{ value }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>   
+        </div>
+        <div class="panel-group alert alert-info">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 style="color:red"><a data-toggle="collapse" href="#collapse2">Registrations</a></h4>
+                            <div id="collapse2" class="panel-collapse collapse">
+                                    <div class="container-fluid" style="display: inline-flex;">
+                                         <div class="table-wrapper-scroll-y my-custom-scrollbar" style="width: 50%; margin-right: 1.5%; height: 18em; overflow: auto;">
+                                            <table class="table table-bordered table-striped mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" colspan="2" style="text-align: center;">Registrations for Donation Drive</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="col" style="text-align: center;"> Drive Date</th>
+                                                        <th scope="col" style="text-align: center;"> Total Receiver Registrations</th>
+                                                    </tr>
+                                                </thead>   
+                                                <tbody>
+                                                    {% for key,value in receiver_detail.items %}
+                                                        <tr>
+                                                            <td style="text-align: center;">{{ key.date }}</td>
+                                                            <td style="text-align: center;">{{ value }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="table-wrapper-scroll-y my-custom-scrollbar" style="width: 50%;margin-right: 1.5%; height: 18em; overflow: auto;">
+                                            <table class="table table-bordered table-striped mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" colspan="2" style="text-align: center;">Registrations for Collection Drive</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="col" style="text-align: center;"> Drive Date</th>
+                                                        <th scope="col" style="text-align: center;"> Total Donor Registrations</th>
+                                                    </tr>
+                                                </thead>   
+                                                <tbody>
+                                                    {% for key,value in donor_detail.items %}
+                                                        <tr>
+                                                            <td style="text-align: center;">{{ key.date }}</td>
+                                                            <td style="text-align: center;">{{ value }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>   
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </div>
      <br><br>
      <div style="margin-top: 2%;" class="container-fluid">
@@ -165,23 +183,25 @@
                         {% endif %}
                     </h4>
                     <br>
-                  <div class="layout-inline row ">
-                      <div class="col-sm-6 col-pro layout-inline align-center ">
-                         <h3><p>Choose a date for donation :</p></h3>
+                  <div class="layout-inline container-fluid " style="margin-top: 2%; text-align: center; display: table;">
+                      <div style="display: table-row;">
+                         <h3><p>Choose a date for donation</p></h3>
                       </div>
                        
-                      <div class="form-radio">
+                      <div class="form-radio" style="margin: 2.5%; display: table-cell;">
                          {% for key,value in donation_dates.items %}
                            <input type="radio" name="donation_date" value="{{ key }}" id="d{{ key }}" />
                            <label for="d{{ key }}"> {{ value.date }} </label>
                           {% endfor %}        
-                      </div>        
+                      </div>    
                   </div>    
+                  <div style="margin: 2.5%;">
                   {% if d_flag %}
                      <input type="submit" class="btn btn-update align-left" value="Register for Donationdrive !" disabled></a>
                   {% else %}
                      <input type="submit" class="btn btn-update align-left" value="Register for Donationdrive !" ></a>
-                  {% endif %}
+                  {% endif %} 
+                  </div>   
               </form>
         </div>
         <div style="padding-left: 2%; margin-top: 5%;">
@@ -195,27 +215,28 @@
               {% endif %}
             </h4>
             <br>
-            <div class="layout-inline row ">
-              <div class="col-sm-6 col-pro layout-inline align-center ">
-                   <h3><p>Choose a date for collection :</p></h3>
+            <div class="layout-inline container-fluid " style="margin-top: 2%; text-align: center; display: table;">
+              <div style="display: table-row;">
+                   <h3><p>Choose a date for collection</p></h3>
               </div>
-              <div class="form-radio">
+              <div class="form-radio" style="margin: 2.5%; display: table-cell;">
                 {% for key,value in collection_dates.items %}
                    <input type="radio" name="collection_date" value="{{ key }}" id="c{{ key }}" />
                    <label for="c{{ key }}"> {{ value.date }} </label>
-                {% endfor %}
-                     
-              </div>        
-            </div>     
-            {% if c_flag %}
+                {% endfor %}        
+              </div> 
+            </div> 
+            <div style="margin: 2.5%;">
+                {% if c_flag %}
                <input type="submit" class="btn btn-update align-left" value="Register for Collectiondrive !" disabled></a>
             {% else %}
                <input type="submit" class="btn btn-update align-left" value="Register for Collectiondrive !" ></a>
-            {% endif %}
+            {% endif %}    
+            </div>
           </form>
         </div>
      </div>
-
+    </div>
           <script src="{% static 'js/vendor/modernizr-3.5.0.min.js' %}"></script>
          <script src="{% static 'js/vendor/jquery-1.12.4.min.js' %}"></script>
          <script src="{% static 'js/popper.min.js' %}"></script>

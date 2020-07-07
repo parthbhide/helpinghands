@@ -147,9 +147,21 @@ def ngo_signup(request):
                     user = User.objects.create_user(request.POST['username'],password = request.POST['password'],
                                                     ngo_name = request.POST['ngo-name'], registration_number = request.POST['reg_number'],
                                                     address =  request.POST['address'], email = request.POST['email'],
-                                                    contact_number = request.POST['mobile'],is_donor= donor_check, is_volunteer = volunteer_check, is_receiver = ngo_check)
-                    auth.login(request, user)
-                    return redirect('home')
+                                                    contact_number = request.POST['mobile'],is_donor= donor_check, is_volunteer = volunteer_check, is_receiver = ngo_check, is_active = False)
+                    #auth.login(request, user)
+                    #return redirect('home')
+                    current_site = get_current_site(request)
+                    email_subject = 'Activate Your Account'
+                    message = render_to_string('acc_activate_email.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'uid':urlsafe_base64_encode(force_bytes(user.username)),
+                    'token':account_activation_token.make_token(user),
+                    })
+                    email = EmailMessage(email_subject, message, to=[request.POST['email']])
+                    email.send()
+                    return render(request, 'index.html', {'message' : 'Please verify your email address to login to your account !!'})
+                    
                 except IntegrityError:
                     return render(request, 'ngo-registration.html' , {'error' : 'NGO with this Registration Number already registered with us !!'})
         else:

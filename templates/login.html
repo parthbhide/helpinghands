@@ -32,7 +32,7 @@
 
 <!-- header-start -->
     <header>
-        <div class="header-area " style=" background:#444;opacity:0.56">
+        <div class="header-area " style=" background:#444;opacity:0.56; height: 10%;">
             <div id="sticky-header" class="main-header-area">
                 <div class="container-fluid p-0">
                     <div class="row align-items-center justify-content-between no-gutters">
@@ -43,7 +43,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="col-xl-7 col-lg-7">
+                        <div class="col-md-6 col-md-6">
                             <div class="main-menu  d-none d-lg-block">
                                 <nav>
                                     <ul id="navigation">
@@ -68,22 +68,22 @@
                                                 <li><a href="{% url 'receiverhome' %}" >Welcome, {{ user.username }}</a></li>
                                             {% endif %}
                                         {% endif %}
+                                        <li>
+                                                <div>
+                                                {% if user.is_authenticated %}
+                                                
+                                                    <a href="javascript:{document.getElementById('logout').submit()}" onclick="">Log Out</a>
+                                                    <form id = "logout" method = "POST" action= "{% url 'logout' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" />
+                                                    </form>
+                                                {% else %}
+                                                    <a href="{% url 'login' %}" >Login</a>
+                                                {% endif %}
+                                                </div>
+                                        </li>
                                     </ul>
                                 </nav>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-3 d-none d-lg-block">
-                            <div class="donate_now">
-                                {% if user.is_authenticated %}
-                                
-                                <a href="javascript:{document.getElementById('logout').submit()}" class="boxed-btn" onclick="">Log Out</a>
-                                <form id = "logout" method = "POST" action= "{% url 'logout' %}">
-                                {% csrf_token %}
-                                <input type="hidden" />
-                                </form>
-                            {% else %}
-                                <a href="{% url 'login' %}" class="boxed-btn">Login</a>
-                            {% endif %}
                             </div>
                         </div>
                         <div class="col-12">
@@ -109,17 +109,17 @@
                         {% endif %}
                     </h4>
                     <h2 class="form-title">Log In</h2>
-                    <div class="form-textbox">
+                    <div class="form-textbox" style="margin:3.5px;">
                         <label for="name">User Name</label>
                         <input type="text" name="username" id="name" />
                     </div>
                     
-                    <div class="form-textbox">
+                    <div class="form-textbox" style="margin:3.5px;">
                         <label for="pass">Password</label>
                         <input type="password" name="password" id="pass" />
                     </div>
 					
-                    <div class="form-textbox">
+                    <div class="form-textbox" style="margin:3.5px;">
                         <input type="submit" name="submit" id="submit" class="submit" value="Log In" />
                     </div>
                 </form>

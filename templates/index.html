@@ -39,8 +39,8 @@
 
     <!-- header-start -->
     <header>
-        <div class="header-area ">
-            <div id="sticky-header" class="main-header-area">
+        <div class="header-area container-fluid">
+            <div id="sticky-header" class="main-header-area" style="height:10%; ">
                 <div class="container-fluid p-0">
                     <div class="row align-items-center justify-content-between no-gutters">
                         <div class="col-xl-2 col-lg-2">
@@ -50,7 +50,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="col-xl-7 col-lg-7">
+                        <div class="col-md-6 col-md-6">
                             <div class="main-menu  d-none d-lg-block">
                                 <nav>
                                     <ul id="navigation">
@@ -75,22 +75,25 @@
                                                 <li><a href="{% url 'receiverhome' %}" >Welcome, {{ user.username }}</a></li>
                                             {% endif %}
                                         {% endif %}
+
+                                        <li>
+					                            <div>
+					                            {% if user.is_authenticated %}
+					                            
+					                                <a href="javascript:{document.getElementById('logout').submit()}" onclick="">Log Out</a>
+					                                <form id = "logout" method = "POST" action= "{% url 'logout' %}">
+					                                {% csrf_token %}
+					                                <input type="hidden" />
+					                                </form>
+					                            {% else %}
+					                                <a href="{% url 'login' %}" >Login</a>
+					                            {% endif %}
+					                            </div>
+                                        </li>
                                     </ul>
+                                    
                                 </nav>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-3 d-none d-lg-block">
-                            <div class="donate_now">
-                            {% if user.is_authenticated %}
-                            
-                                <a href="javascript:{document.getElementById('logout').submit()}" class="boxed-btn" onclick="">Log Out</a>
-                                <form id = "logout" method = "POST" action= "{% url 'logout' %}">
-                                {% csrf_token %}
-                                <input type="hidden" />
-                                </form>
-                            {% else %}
-                                <a href="{% url 'login' %}" class="boxed-btn">Login</a>
-                            {% endif %}
+
                             </div>
                         </div>
                         <div class="col-12">
@@ -105,7 +108,7 @@
 
     <!-- slider_area_start -->
     <div class="slider_area slider_bg_1 d-flex align-items-center">
-        <div class="container">
+        <div class="container-fluid" style="text-align: center; padding-right: 2%">
             <div class="row">
                 <div class="col-xl-12">
                     <div class="single_slider">
@@ -115,9 +118,9 @@
                             <p>At Charity United we believe that all children in the world have the right to be <br>
                                 cared for and the right to be protected </p>
                             {% if not user.is_authenticated %}
-                            <a href="{% url 'u-signup' %}" class="boxed-btn2">Become A Donor<a>
-                            <a href="{% url 'u-signup' %}" class="boxed-btn2">Become A Volunteer<a>
-                            <a href="{% url 'n-signup' %}" class="boxed-btn2">Join As NGO<a>
+                            <a href="{% url 'u-signup' %}" class="boxed-btn2" style="margin: 2.5px;">Become A Donor<a>
+                            <a href="{% url 'u-signup' %}" class="boxed-btn2" style="margin: 2.5px;">Become A Volunteer<a>
+                            <a href="{% url 'n-signup' %}" class="boxed-btn2" style="margin: 2.5px;">Join As NGO<a>
                             {% endif %}
                         </div>
                     </div>

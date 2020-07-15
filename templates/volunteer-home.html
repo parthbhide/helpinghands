@@ -59,8 +59,10 @@
                                                     <li><a href="{% url 'adminhome' %}" >Welcome, {{ user.username }}</a></li>
                                                 {% elif user.is_donor %}
                                                     <li><a href="{% url 'donorhome' %}" >Welcome, {{ user.username }}</a></li>
+                                                {% elif user.is_receiver %}
+                                                <li><a href="{% url 'receiverhome' %}" >Welcome, {{ user.username }}</a></li>
                                                 {% else %}
-                                                    <li><a href="{% url 'receiverhome' %}" >Welcome, {{ user.username }}</a></li>
+                                                    <li><a href="{% url 'volunteerhome' %}" >Welcome, {{ user.username }}</a></li>
                                                 {% endif %}
                                              {% endif %}
                                               <li>

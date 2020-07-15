@@ -12,7 +12,7 @@ How to run project :
             Use below command to do it witn pipenv ( there are other means you can use them too ).
                     virtualenv .
 
-          * Antivate the virtual environment just created, using command :
+          * Activate the virtual environment just created, using command :
                     .Scripts\activate   (On windows)
                     On linux, move to bin folder and execute the command:
                     source .\activate
